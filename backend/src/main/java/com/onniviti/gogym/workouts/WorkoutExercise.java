@@ -1,5 +1,6 @@
-package com.onniviti.gogym.model;
+package com.onniviti.gogym.workouts;
 
+import com.onniviti.gogym.exercises.Exercise;
 import jakarta.persistence.*;
 
 @Entity

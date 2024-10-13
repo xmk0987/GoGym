@@ -1,6 +1,5 @@
-package com.onniviti.gogym.repository;
+package com.onniviti.gogym.user;
 
-import com.onniviti.gogym.model.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -1,4 +1,4 @@
-package com.onniviti.gogym.model;
+package com.onniviti.gogym.workouts;
 
 import jakarta.persistence.*;
 import java.time.LocalTime;

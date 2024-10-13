@@ -1,4 +1,4 @@
-package com.onniviti.gogym.model;
+package com.onniviti.gogym.exercises;
 
 import java.util.List;
 

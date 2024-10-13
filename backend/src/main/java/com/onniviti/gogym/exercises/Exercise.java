@@ -1,5 +1,6 @@
-package com.onniviti.gogym.model;
+package com.onniviti.gogym.exercises;
 
+import com.onniviti.gogym.workouts.WorkoutExercise;
 import jakarta.persistence.*;
 import java.util.List;
 

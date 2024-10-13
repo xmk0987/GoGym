@@ -1,4 +1,4 @@
-package com.onniviti.gogym.model;
+package com.onniviti.gogym.user;
 
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,26 +16,32 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    private String username;
+    @Column (nullable = false)
+    private String firstName;
+
+    @Column (nullable = false)
+    private String lastName;
+
+    @Column (nullable = false, unique = true)
     private String email;
+
+    @Column (nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
     private Boolean locked = false;
-    private Boolean enabled = true;
+    private Boolean enabled = false;
 
     // Constructor without id
-    public User(String name, String username, String email, String password, UserRole userRole, Boolean locked, Boolean enabled) {
-        this.name = name;
-        this.username = username;
+    public User(String firstName, String lastName,
+                String email, String password, UserRole userRole) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.userRole = userRole;
-        this.locked = locked;
-        this.enabled = enabled;
     }
 
     // Default constructor for JPA
@@ -50,20 +56,24 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String name) {
+        this.firstName = name;
     }
 
     public String getUsername() {
-        return username;
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {

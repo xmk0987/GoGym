@@ -6,9 +6,9 @@ public class RegistrationRequest {
     private final String email;
     private final String password;
 
-    public RegistrationRequest(String firstName, String lastname, String email, String password) {
+    public RegistrationRequest(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
-        this.lastName = lastname;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
     }
@@ -26,7 +26,7 @@ public class RegistrationRequest {
         return firstName;
     }
 
-    public String getLastname() {
+    public String getLastName() {
         return lastName;
     }
 

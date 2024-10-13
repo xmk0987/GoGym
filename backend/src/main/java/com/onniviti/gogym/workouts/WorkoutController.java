@@ -1,7 +1,5 @@
-package com.onniviti.gogym.controller;
+package com.onniviti.gogym.workouts;
 
-import com.onniviti.gogym.model.Workout;
-import com.onniviti.gogym.service.WorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

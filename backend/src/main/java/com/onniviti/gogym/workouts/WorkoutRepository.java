@@ -1,6 +1,5 @@
-package com.onniviti.gogym.repository;
+package com.onniviti.gogym.workouts;
 
-import com.onniviti.gogym.model.Workout;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

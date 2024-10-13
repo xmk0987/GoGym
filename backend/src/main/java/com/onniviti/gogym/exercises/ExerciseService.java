@@ -1,8 +1,6 @@
-package com.onniviti.gogym.service;
+package com.onniviti.gogym.exercises;
 
-import com.onniviti.gogym.model.ExerciseWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.onniviti.gogym.model.Exercise;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
