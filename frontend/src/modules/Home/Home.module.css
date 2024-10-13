@@ -1,0 +1,70 @@
+.homeContainer {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  gap: 20px;
+  overflow: hidden;
+}
+
+/* Weekly Workout */
+
+.weeklyWorkout {
+  width: 100%;
+  min-height: 60px;
+  border-radius: var(--radius);
+  background-color: var(--secondary);
+  box-shadow: var(--box-shadow);
+  display: inline-flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.weeklyWorkout div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  flex: 1;
+}
+
+.weeklyWorkout div p {
+  font-size: 10px;
+  text-align: center;
+}
+
+.weeklyWorkout span {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+}
+
+/* Today workout */
+
+.todayWorkout {
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+  padding: 0 5px;
+}
+
+.todayWorkoutHeader {
+  width: 100%;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.todayWorkoutHeader h1 {
+  font-size: var(--small-header-font-size);
+}
+
+.homeContainer button {
+  position: absolute;
+  bottom: 15px;
+  right: 50%;
+  transform: translateX(50%);
+}

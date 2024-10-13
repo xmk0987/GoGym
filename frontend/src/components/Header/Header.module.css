@@ -1,0 +1,13 @@
+.headerContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  justify-content: center;
+  gap: 5px;
+  padding: var(--padding) var(--padding) 10px var(--padding);
+}
+
+.headerContainer h2 {
+  font-size: var(--small-header-font-size);
+}

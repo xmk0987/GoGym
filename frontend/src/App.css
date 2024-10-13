@@ -1,0 +1,19 @@
+#root {
+  width: 600px;
+  max-width: 800px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
+  padding: var(--padding) var(--padding) 0 var(--padding);
+}
+
+.greyScreen {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.567);
+  position: absolute;
+}

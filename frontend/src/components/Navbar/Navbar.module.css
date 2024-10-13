@@ -1,0 +1,26 @@
+.navbarContainer {
+  min-height: 60px;
+  width: 100%;
+  display: inline-flex;
+  overflow: hidden;
+}
+
+.navbarItem {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbarItem span {
+  height: 2px;
+  width: 100%;
+}
+
+.navbarItem button {
+  flex-grow: 1;
+}
+
+.active {
+  background-color: var(--accent);
+}

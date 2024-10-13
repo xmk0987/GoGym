@@ -1,0 +1,84 @@
+{
+  "exercises": [
+    {
+      "name": "Bench Press",
+      "category": "Chest",
+      "muscles": ["Pectorals", "Triceps", "Deltoids"],
+      "equipment": "Barbell",
+      "difficulty": "Intermediate",
+      "instructions": "Lie flat on the bench with your feet on the ground. Grip the barbell with your hands slightly wider than shoulder-width apart. Lower the barbell slowly until it touches your chest, then press it back up to the starting position."
+    },
+    {
+      "name": "Squat",
+      "category": "Legs",
+      "muscles": ["Quadriceps", "Hamstrings", "Glutes"],
+      "equipment": "Barbell",
+      "difficulty": "Intermediate",
+      "instructions": "Stand with feet shoulder-width apart. Hold the barbell across your upper back. Lower your body by bending your knees, keeping your chest up and your back straight. Go as low as you can while maintaining good form, then push through your heels to return to the starting position."
+    },
+    {
+      "name": "Deadlift",
+      "category": "Back",
+      "muscles": ["Hamstrings", "Glutes", "Lower Back"],
+      "equipment": "Barbell",
+      "difficulty": "Advanced",
+      "instructions": "Stand with your feet under the barbell. Bend at your hips and knees to grab the bar with an overhand grip. Keep your back straight and chest up. Lift the bar by straightening your hips and knees. Lower the bar back to the ground in a controlled manner."
+    },
+    {
+      "name": "Bicep Curl",
+      "category": "Arms",
+      "muscles": ["Biceps"],
+      "equipment": "Dumbbells",
+      "difficulty": "Beginner",
+      "instructions": "Stand with a dumbbell in each hand, arms at your sides. Slowly curl the weights toward your shoulders, squeezing your biceps at the top. Lower the weights back to the starting position."
+    },
+    {
+      "name": "Lat Pulldown",
+      "category": "Back",
+      "muscles": ["Latissimus Dorsi", "Biceps"],
+      "equipment": "Pulley Machine",
+      "difficulty": "Beginner",
+      "instructions": "Sit at the lat pulldown machine with your knees secured under the pad. Grip the bar with hands wider than shoulder-width apart. Pull the bar down towards your chest, squeezing your shoulder blades together. Slowly release back to the starting position."
+    },
+    {
+      "name": "Shoulder Press",
+      "category": "Shoulders",
+      "muscles": ["Deltoids", "Triceps"],
+      "equipment": "Dumbbells",
+      "difficulty": "Intermediate",
+      "instructions": "Sit on a bench with back support. Hold a dumbbell in each hand at shoulder height. Press the weights overhead until your arms are fully extended. Lower the weights back down to shoulder level."
+    },
+    {
+      "name": "Lunges",
+      "category": "Legs",
+      "muscles": ["Quadriceps", "Glutes", "Hamstrings"],
+      "equipment": "Bodyweight",
+      "difficulty": "Beginner",
+      "instructions": "Stand upright and take a big step forward with one leg. Lower your hips until both knees are bent at 90-degree angles. Push through your front foot to return to the starting position, then repeat with the other leg."
+    },
+    {
+      "name": "Plank",
+      "category": "Core",
+      "muscles": ["Abdominals", "Lower Back"],
+      "equipment": "Bodyweight",
+      "difficulty": "Beginner",
+      "instructions": "Start in a push-up position but rest your weight on your forearms instead of your hands. Keep your body in a straight line from your head to your heels, engaging your core. Hold this position for as long as possible."
+    },
+    {
+      "name": "Tricep Dips",
+      "category": "Arms",
+      "muscles": ["Triceps"],
+      "equipment": "Parallel Bars",
+      "difficulty": "Intermediate",
+      "instructions": "Grip the parallel bars and lift yourself so your arms are fully extended. Lower your body by bending your elbows until your upper arms are parallel to the floor. Push yourself back up to the starting position."
+    },
+    {
+      "name": "Leg Press",
+      "category": "Legs",
+      "muscles": ["Quadriceps", "Hamstrings", "Glutes"],
+      "equipment": "Leg Press Machine",
+      "difficulty": "Intermediate",
+      "instructions": "Sit on the leg press machine with your feet shoulder-width apart on the platform. Push the platform away by extending your knees. Slowly return to the starting position without locking your knees."
+    }
+  ]
+}

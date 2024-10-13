@@ -1,0 +1,90 @@
+:root {
+  --bg: #f9f7f7;
+  --accent: #3f72af;
+  --secondary: #dbe2ef;
+  --input-outline: #c4c4c4;
+
+  --text-font: "Inter", sans-serif;
+  --header-font: "Poppins", sans-serif;
+
+  --text-font-size: 12px;
+  --header-font-size: 25px;
+  --small-header-font-size: 13px;
+
+  --padding: 20px;
+  --radius: 10px;
+
+  --shadow: rgba(0, 0, 0, 0.301);
+  --box-shadow: 0 2px 3px 1px var(--shadow);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  min-width: 280px;
+  min-height: 100vh;
+  max-height: 100vh;
+  background-color: var(--bg);
+  font-family: var(--text-font);
+  font-weight: 400;
+  font-size: var(--text-font-size);
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+* {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--header-font);
+  font-weight: 700;
+  font-size: var(--header-font-size);
+}
+
+button {
+  background-color: transparent;
+  border: none;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+.defaultBtnStyle {
+  width: max-content;
+  padding: 10px 10px;
+  background-color: var(--accent);
+  border-radius: var(--radius);
+  color: white;
+  font-size: var(--small-header-font-size);
+  font-weight: bold;
+  box-shadow: var(--box-shadow);
+}
+
+button:active {
+  box-shadow: none;
+}
+
+.defaultBorderStyle {
+  border: 1px solid var(--input-outline);
+  padding: 5px 10px;
+  border-radius: var(--radius);
+  color: var(--input-outline);
+}
