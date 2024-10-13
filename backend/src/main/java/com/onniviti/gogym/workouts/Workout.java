@@ -5,7 +5,6 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Entity
-@Table(name = "workouts")  // Map to the "workouts" table
 public class Workout {
 
     @Id
@@ -19,8 +18,8 @@ public class Workout {
     @Column(name = "name")  // Maps to "name" in the database (same name)
     private String name;
 
-   // @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-   // private List<WorkoutExercise> workoutExercises;
+   @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+   private List<WorkoutExercise> workoutExercises;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "day_of_workout")  // Maps to "day_of_workout" in the database
