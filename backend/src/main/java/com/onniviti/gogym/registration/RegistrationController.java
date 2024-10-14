@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 @RequestMapping(path = "api/registration")
@@ -27,12 +28,13 @@ public class RegistrationController {
     }
 
     @GetMapping(path = "confirm")
-    public String confirm(@RequestParam("token") String token) {
-        return registrationService.confirmToken(token);
-    }
+    public RedirectView confirm(@RequestParam("token") String token) {
+        String result = registrationService.confirmToken(token);
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<String> handleIllegalStateException(IllegalStateException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        if (result.equals("confirmed")) {
+            return new RedirectView("http://localhost:5173/login?confirmed=true");
+        } else {
+            return new RedirectView("http://localhost:5173/error?confirmed=false");
+        }
     }
 }

@@ -8,11 +8,13 @@
   --header-font: "Poppins", sans-serif;
 
   --text-font-size: 12px;
+  --small-text-font-size: 10px;
+
   --header-font-size: 25px;
   --small-header-font-size: 13px;
 
   --padding: 20px;
-  --radius: 10px;
+  --radius: 5px;
 
   --shadow: rgba(0, 0, 0, 0.301);
   --box-shadow: 0 2px 3px 1px var(--shadow);
@@ -87,4 +89,28 @@ button:active {
   padding: 5px 10px;
   border-radius: var(--radius);
   color: var(--input-outline);
+}
+
+input {
+  border: 1px solid var(--input-outline);
+  padding: 5px 10px;
+  border-radius: var(--radius);
+  color: black;
+}
+
+label {
+  font-size: var(--small-text-font-size);
+}
+
+input::placeholder {
+  color: var(--input-outline);
+}
+
+.invalid {
+  border: 1px solid red;
+}
+
+.error {
+  color: red;
+  font-size: var(--small-text-font-size);
 }

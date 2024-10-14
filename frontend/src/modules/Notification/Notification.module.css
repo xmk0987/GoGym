@@ -1,0 +1,12 @@
+.message {
+  width: 100%;
+  font-size: var(--small-text-font-size);
+}
+
+.error {
+  color: red;
+}
+
+.notError {
+  color: rgb(35, 152, 35);
+}

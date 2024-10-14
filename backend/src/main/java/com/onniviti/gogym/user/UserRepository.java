@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
+
+
     @Transactional
     @Modifying
     @Query("UPDATE User a " +

@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -37,6 +38,12 @@ public class UserService implements UserDetailsService {
                         new UsernameNotFoundException(
                                 String.format(USER_NOT_FOUND, email)));
     }
+
+
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
 
     public String signUpUser(User user) {
         boolean userExists = userRepository
@@ -67,7 +74,27 @@ public class UserService implements UserDetailsService {
         return token;
     }
 
+
+    public User loginUser(String username, String password) {
+        Optional<User> userOptional = userRepository.findByEmail(username);
+
+        if (userOptional.isEmpty()) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        User user = userOptional.get();
+
+        // Check if the password matches
+        if (!bCryptPasswordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalStateException("Invalid credentials");
+        }
+
+        return user;
+    }
+
     public void enableUser(String email) {
         userRepository.enableAppUser(email);
     }
+
+
 }

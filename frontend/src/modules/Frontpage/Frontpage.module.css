@@ -1,0 +1,78 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+}
+
+.container form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 340px;
+  max-width: 100%;
+}
+
+.header {
+  display: inline-flex;
+  width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.longFormItem {
+  display: inline-flex;
+  gap: 15px;
+  width: 100%;
+}
+
+.formItem {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  position: relative;
+}
+
+.submitBtn {
+  width: 100% !important;
+  margin-top: 10px;
+}
+
+.changeTypeBtn span {
+  color: var(--accent);
+}
+
+.passwordVisibility {
+  position: absolute;
+  bottom: 0;
+  right: 5px;
+}
+
+.inputContainer {
+  position: relative;
+  width: 100%;
+}
+
+.inputContainer input {
+  width: 100%;
+}
+
+@media only screen and (max-width: 400px) {
+  .longFormItem {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .container form {
+    width: 100%;
+  }
+}

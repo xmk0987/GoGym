@@ -10,27 +10,29 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Service
 public class RegistrationService {
 
-    private final EmailValidator emailValidator;
+    private final RegisterValidator registerValidator;
     private final UserService userService;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
 
-    public RegistrationService (EmailValidator emailValidator, UserService userService, ConfirmationTokenService confirmationTokenService, EmailSender emailSender) {
-        this.emailValidator = emailValidator;
+    public RegistrationService (RegisterValidator emailValidator, UserService userService, ConfirmationTokenService confirmationTokenService, EmailSender emailSender) {
+        this.registerValidator = emailValidator;
         this.userService = userService;
         this.confirmationTokenService = confirmationTokenService;
         this.emailSender = emailSender;
     }
 
     public String register(RegistrationRequest request) {
-        boolean isValidEmail = emailValidator.test(request.getEmail());
+        // Validate form fields
+        Map<String, String> errors = registerValidator.validateRegistrationRequest(request);
 
-        if (!isValidEmail) {
-            throw new IllegalStateException("Email not valid");
+        if (!errors.isEmpty()) {
+            throw new IllegalStateException("Validation failed: " + errors.toString());
         }
 
         String token = userService.signUpUser(
