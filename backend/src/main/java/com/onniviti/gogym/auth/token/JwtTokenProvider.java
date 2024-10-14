@@ -58,9 +58,7 @@ public class JwtTokenProvider {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-
-            System.out.println("Getting user from token");
-            System.out.println(claims.getSubject());
+            
             return claims.getSubject();
         } catch (SignatureException e) {
             throw new RuntimeException("Invalid JWT signature");
