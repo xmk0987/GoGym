@@ -1,12 +1,13 @@
-import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoutes from "./ProtectedRoutes";
 import Home from "../modules/Home/Home";
-import Workout from "../modules/Workout/Workout";
 import Login from "../modules/Frontpage/Login";
 import Register from "../modules/Frontpage/Register";
+import Workouts from "../modules/Workouts/Workouts";
+import Workout from "../modules/Workouts/components/Workout/Workout";
 
 const AppRoutes = () => {
+  
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/login" />} />
@@ -15,7 +16,8 @@ const AppRoutes = () => {
 
       <Route element={<ProtectedRoutes />}>
         <Route path="/home" element={<Home />} />
-        <Route path="/workout" element={<Workout />} />
+        <Route path="/workouts" element={<Workouts />} />
+        <Route path="/workouts/:workoutId" element={<Workout />} />
       </Route>
       <Route path="/*" element={<Navigate to="/login" />} />
     </Routes>

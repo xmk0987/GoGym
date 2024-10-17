@@ -5,6 +5,7 @@ const messageSlice = createSlice({
   initialState: {
     error: true,
     message: "",
+    dontShowToAll: false,
   },
   reducers: {
     resetState: (state) => {
@@ -12,9 +13,10 @@ const messageSlice = createSlice({
       state.message = "";
     },
     setMessage: (state, action) => {
-      const { message, error } = action.payload;
+      const { message, error, dontShowToAll } = action.payload;
       state.error = error;
       state.message = message;
+      state.dontShowToAll = dontShowToAll ? dontShowToAll : false;
     },
   },
 });

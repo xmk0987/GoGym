@@ -8,12 +8,16 @@
 
 main {
   flex-grow: 1;
-  padding: var(--padding) var(--padding) 0 var(--padding);
+  width: 100%;
+  padding: 5px var(--padding) 0 var(--padding);
 }
 
 .greyScreen {
-  width: 100vw;
-  height: 100vh;
+  min-width: 100vw;
+  min-height: 100vh;
   background-color: rgba(0, 0, 0, 0.567);
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

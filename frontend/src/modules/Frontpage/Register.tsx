@@ -35,6 +35,7 @@ const Register: React.FC = () => {
     confirmPassword: "",
   });
   const dispatch: AppDispatch = useDispatch();
+
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =

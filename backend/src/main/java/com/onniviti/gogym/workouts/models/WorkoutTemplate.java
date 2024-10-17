@@ -1,42 +1,42 @@
-package com.onniviti.gogym.workouts;
+package com.onniviti.gogym.workouts.models;
 
 import jakarta.persistence.*;
-import java.time.LocalTime;
+
 import java.util.List;
 
 @Entity
-public class Workout {
+public class WorkoutTemplate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")  // Maps to "id" in the database
-    private int id;
+    private Long id;
 
     @Column(name = "user_id")  // Maps to "user_id" in the database
-    private int userId;
+    private Long userId;
 
     @Column(name = "name")  // Maps to "name" in the database (same name)
     private String name;
 
    @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-   private List<WorkoutExercise> workoutExercises;
+   private List<WorkoutExerciseTemplate> workoutExercises;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "day_of_workout")  // Maps to "day_of_workout" in the database
     private DayOfWorkout dayOfWorkout;
 
     @Column(name = "time_of_workout")  // Maps to "time_of_workout" in the database
-    private LocalTime timeOfWorkout;
+    private String timeOfWorkout;
 
     public enum DayOfWorkout {
         Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday, Other;
     }
 
     // No-argument constructor (required by JPA)
-    public Workout() {}
+    public WorkoutTemplate() {}
 
     // Parameterized constructor
-    public Workout(int userId, String name, List<WorkoutExercise> workoutExercises, DayOfWorkout dayOfWorkout, LocalTime timeOfWorkout) {
+    public WorkoutTemplate(Long userId, String name, List<WorkoutExerciseTemplate> workoutExercises, DayOfWorkout dayOfWorkout, String timeOfWorkout) {
         this.userId = userId;
         this.name = name;
         //this.workoutExercises = workoutExercises;
@@ -46,19 +46,19 @@ public class Workout {
 
     // Getters and Setters
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -70,13 +70,13 @@ public class Workout {
         this.name = name;
     }
 
-  //  public List<WorkoutExercise> getWorkoutExercises() {
-    //    return workoutExercises;
-   // }
+      public List<WorkoutExerciseTemplate> getWorkoutExercises() {
+           return workoutExercises;
+       }
 
-   // public void setWorkoutExercises(List<WorkoutExercise> workoutExercises) {
-   //     this.workoutExercises = workoutExercises;
-   // }
+public void setWorkoutExercises(List<WorkoutExerciseTemplate> workoutExercises) {
+    this.workoutExercises = workoutExercises;
+ }
 
     public DayOfWorkout getDayOfWorkout() {
         return dayOfWorkout;
@@ -86,11 +86,11 @@ public class Workout {
         this.dayOfWorkout = dayOfWorkout;
     }
 
-    public LocalTime getTimeOfWorkout() {
+    public String getTimeOfWorkout() {
         return timeOfWorkout;
     }
 
-    public void setTimeOfWorkout(LocalTime timeOfWorkout) {
+    public void setTimeOfWorkout(String timeOfWorkout) {
         this.timeOfWorkout = timeOfWorkout;
     }
 }

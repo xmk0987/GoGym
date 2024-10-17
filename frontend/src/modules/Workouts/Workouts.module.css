@@ -31,13 +31,13 @@
   flex-direction: column;
   gap: 20px;
   overflow: scroll;
-  padding: 0 5px 20px 5px;
+  padding: 0 5px 75px 5px;
 }
 
 .dailyWorkout {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 15px;
 }
 
 .createWorkoutBtn {

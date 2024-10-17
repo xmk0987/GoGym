@@ -1,17 +1,19 @@
 // src/store.ts
 import { configureStore } from "@reduxjs/toolkit";
-import workoutReducer from "./redux/workoutSlice";
+import workoutsReducer from "./redux/workouts/workoutsSlice";
 import registrationReducer from "./redux/registration/registrationSlice";
 import messageReducer from "./redux/notification/notificationSlice";
 import authReducer from "./redux/auth/authSlice";
+import exercisesReducer from "./redux/exercises/exercisesSlice";
 
 // Configure the store with the reducer
 export const store = configureStore({
   reducer: {
-    workout: workoutReducer,
+    workouts: workoutsReducer,
     registration: registrationReducer,
     message: messageReducer,
     auth: authReducer,
+    exercises: exercisesReducer,
   },
 });
 

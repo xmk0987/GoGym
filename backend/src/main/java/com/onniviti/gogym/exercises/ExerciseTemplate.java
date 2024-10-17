@@ -1,11 +1,11 @@
 package com.onniviti.gogym.exercises;
 
-import com.onniviti.gogym.workouts.WorkoutExercise;
+import com.onniviti.gogym.workouts.models.WorkoutExerciseTemplate;
 import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-public class Exercise {
+public class ExerciseTemplate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,19 +13,21 @@ public class Exercise {
 
     private String name;
     private String category;
-    private List<String> muscles;
+    private String muscles;
     private String equipment;
     private String difficulty;
+
+    @Column(columnDefinition = "TEXT")
     private String instructions;
 
-    @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<WorkoutExercise> workoutExercises;
+    @Transient
+    private List<String> musclesList;
 
     // No-argument constructor (required by JPA)
-    public Exercise() {}
+    public ExerciseTemplate() {}
 
     // Parameterized constructor for easier instance creation
-    public Exercise(String name, String category, List<String> muscles, String equipment, String difficulty, String instructions) {
+    public ExerciseTemplate(String name, String category, String muscles, String equipment, String difficulty, String instructions) {
         this.name = name;
         this.category = category;
         this.muscles = muscles;
@@ -49,8 +51,8 @@ public class Exercise {
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
 
-    public List<String> getMuscles() { return muscles; }
-    public void setMuscles(List<String> muscles) { this.muscles = muscles; }
+    public String getMuscles() { return muscles; }
+    public void setMuscles(String muscles) { this.muscles = muscles; }
 
     public String getEquipment() { return equipment; }
     public void setEquipment(String equipment) { this.equipment = equipment; }
@@ -61,11 +63,10 @@ public class Exercise {
     public String getInstructions() { return instructions; }
     public void setInstructions(String instructions) { this.instructions = instructions; }
 
-    public List<WorkoutExercise> getWorkoutExercises() {
-        return workoutExercises;
+    public List<String> getMusclesList() {
+        return musclesList;
     }
-
-    public void setWorkoutExercises(List<WorkoutExercise> workoutExercises) {
-        this.workoutExercises = workoutExercises;
+    public void setMusclesList(List<String> musclesList) {
+        this.musclesList = musclesList;
     }
 }

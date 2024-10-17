@@ -7,6 +7,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -40,11 +41,11 @@ public class AuthService {
         } catch (AuthenticationException e) {
             // Log exception and rethrow
             System.err.println("Authentication error: " + e.getMessage());
-            throw new RuntimeException("Invalid credentials");
+            throw new UsernameNotFoundException("Invalid credentials");
         } catch (Exception e) {
             // Log any other potential errors
             System.err.println("Error generating tokens: " + e.getMessage());
-            throw new RuntimeException("Token generation failed");
+            throw new RuntimeException(e.getMessage());
         }
     }
 

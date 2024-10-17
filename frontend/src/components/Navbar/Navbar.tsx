@@ -1,5 +1,4 @@
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom"; // Import useLocation hook
+import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./Navbar.module.css";
 import ExerciseIcon from "../../assets/icons/ExerciseIcon";
 import HomeIcon from "../../assets/icons/HomeIcon";
@@ -13,21 +12,23 @@ const Navbar = () => {
   };
 
   // Function to check if the current route matches
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => location.pathname.startsWith(path);
 
   return (
     <nav className={styles["navbarContainer"]}>
       <div className={styles["navbarItem"]}>
-        <span className={`${isActive("/home") ? styles["active"] : ""} `}></span>
+        <span
+          className={`${isActive("/home") ? styles["active"] : ""} `}
+        ></span>
         <button onClick={() => handlePathing("home")}>
           <HomeIcon />
         </button>
       </div>
       <div className={styles["navbarItem"]}>
         <span
-          className={`${isActive("/workout") ? styles["active"] : ""}`}
+          className={`${isActive("/workouts") ? styles["active"] : ""}`}
         ></span>
-        <button onClick={() => handlePathing("workout")}>
+        <button onClick={() => handlePathing("workouts")}>
           <ExerciseIcon />
         </button>
       </div>

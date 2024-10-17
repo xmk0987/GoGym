@@ -31,6 +31,7 @@ body {
   display: flex;
   justify-content: center;
   min-width: 280px;
+  max-width: 100vw;
   min-height: 100vh;
   max-height: 100vh;
   background-color: var(--bg);
@@ -91,7 +92,8 @@ button:active {
   color: var(--input-outline);
 }
 
-input {
+input,
+select {
   border: 1px solid var(--input-outline);
   padding: 5px 10px;
   border-radius: var(--radius);
@@ -113,4 +115,11 @@ input::placeholder {
 .error {
   color: red;
   font-size: var(--small-text-font-size);
+}
+
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

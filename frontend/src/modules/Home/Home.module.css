@@ -48,7 +48,6 @@
   flex-direction: column;
   gap: 10px;
   overflow: hidden;
-  padding: 0 5px;
 }
 
 .todayWorkoutHeader {
@@ -60,6 +59,14 @@
 
 .todayWorkoutHeader h1 {
   font-size: var(--small-header-font-size);
+}
+
+.todayWorkouts {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow: scroll;
+  padding: 5px 5px 60px 5px;
 }
 
 .homeContainer button {

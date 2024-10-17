@@ -1,13 +1,22 @@
 .container {
   width: 100%;
   min-height: 70px;
-  background-color: var(--secondary);
-  color: rgb(0, 0, 0);
   border-radius: var(--radius);
   padding: 10px;
   box-shadow: var(--box-shadow);
   display: inline-flex;
   justify-content: space-between;
+  position: relative;
+}
+
+.selected {
+  background-color: var(--accent);
+  color: white;
+}
+
+.notSelected {
+  background-color: var(--secondary);
+  color: rgb(0, 0, 0);
 }
 
 .containerInfo {
@@ -16,12 +25,22 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
-
   justify-content: center;
+}
+
+.containerInfo p:nth-of-type(1) {
+  font-size: var(--small-text-font-size);
 }
 
 .container h2 {
   font-size: var(--small-header-font-size);
+}
+
+.container button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translate(0, -50%);
 }
 
 .container:hover {

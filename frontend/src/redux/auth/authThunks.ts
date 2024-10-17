@@ -36,12 +36,10 @@ export const checkAuthStatus = createAsyncThunk<AuthUser | null>(
   async (_, { dispatch, rejectWithValue }) => {
     try {
       const response = await authService.checkAuthStatus();
-      localStorage.setItem("authenticated", "true");
 
       return response;
     } catch (error) {
       const errorMessage = handleError(error);
-      localStorage.removeItem("authenticated");
       dispatch(
         setMessage({
           message: errorMessage,

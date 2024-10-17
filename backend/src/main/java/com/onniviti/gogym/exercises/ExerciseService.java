@@ -1,40 +1,30 @@
 package com.onniviti.gogym.exercises;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ExerciseService {
 
-    private List<Exercise> exercises;
+    private final ExerciseRepository exerciseRepository;
 
-    @PostConstruct
-    public void loadExercises() {
-        try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("exercises.json");
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            ExerciseWrapper wrapper = objectMapper.readValue(inputStream, ExerciseWrapper.class);
-            this.exercises = wrapper.getExercises();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @Autowired
+    public ExerciseService(ExerciseRepository exerciseRepository) {
+        this.exerciseRepository = exerciseRepository;
     }
 
-    public List<Exercise> getExercises() {
-        return exercises;
-    }
+    public List<ExerciseTemplate> getExercises() {
+        // Fetch all exercises
+        List<ExerciseTemplate> exercises = exerciseRepository.findAll();
 
-    public Exercise getExerciseByName(String name) {
-        return exercises.stream().filter(exercise -> exercise
-                        .getName()
-                        .equalsIgnoreCase(name))
-                        .findFirst()
-                        .orElse(null);
+        // Transform muscles from comma-separated String to List<String>
+        return exercises.stream().peek(exercise -> {
+            List<String> musclesList = Arrays.asList(exercise.getMuscles().split(","));
+            exercise.setMusclesList(musclesList);
+        }).collect(Collectors.toList());
     }
-
 }

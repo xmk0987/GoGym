@@ -1,12 +1,23 @@
-import React from "react";
 import style from "./Home.module.css";
 import Navbar from "../../components/Navbar/Navbar";
 import Header from "../../components/Header/Header";
 import WeeklyWorkout from "./components/WeeklyWorkout";
-import WorkoutCard from "../Workout/components/WorkoutCard/WorkoutCard";
-import WorkoutList from "../Workout/components/WorkoutList/WorkoutList";
+import useWorkouts from "../../hooks/useWorkouts";
+import { getCurrentDay, getFormattedDate } from "../../utils/date";
+import WorkoutCard from "../Workouts/components/WorkoutCard/WorkoutCard";
 
 const Home = () => {
+  const workouts = useWorkouts();
+
+  const dateToday = new Date();
+  const formattedDate = getFormattedDate(dateToday);
+
+  const today = getCurrentDay();
+
+  const todaysWorkouts = workouts.filter(
+    (workout) => workout.dayOfWorkout === today
+  );
+
   return (
     <>
       <Header />
@@ -15,12 +26,14 @@ const Home = () => {
         <section className={style["todayWorkout"]}>
           <div className={style["todayWorkoutHeader"]}>
             <h1>Today:</h1>
-            <p>Mon. 24</p>
+            <p>{formattedDate}</p>
           </div>
-{/*           <WorkoutCard  /> */}
-          <WorkoutList />
+          <div className={style["todayWorkouts"]}>
+            {todaysWorkouts.map((workout) => (
+              <WorkoutCard workout={workout} key={workout.id} />
+            ))}
+          </div>
         </section>
-        <button className="defaultBtnStyle">Go To Workout</button>
       </main>
       <Navbar />
     </>

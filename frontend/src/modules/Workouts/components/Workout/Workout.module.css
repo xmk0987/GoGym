@@ -1,0 +1,35 @@
+.workoutContainer {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  gap: 20px;
+  overflow: hidden;
+}
+
+.workoutHeader {
+  width: 100%;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.workoutHeader h1 {
+  font-size: var(--small-header-font-size);
+}
+
+.exercises {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  gap: 20px;
+  overflow: scroll;
+  padding-bottom: 50px;
+}
+
+.createExerciseBtn {
+  position: absolute;
+  bottom: 15px;
+  right: 50%;
+  transform: translateX(50%);
+}

@@ -1,0 +1,72 @@
+.container {
+  width: 300px;
+  max-width: 90%;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--secondary);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 20px;
+}
+
+.container h1 {
+  font-size: var(--small-header-font-size);
+}
+
+.container form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.formItem {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.longFormItem {
+  display: inline-flex;
+  gap: 20px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.toFailure {
+  display: inline-flex;
+  align-items: center;
+}
+
+
+
+.toFailure input {
+  width: 15px;
+  height: 15px;
+}
+
+.longFormItem .formItem {
+  flex: 1;
+}
+
+.longFormItem .formItem input {
+  width: 100%;
+}
+
+.formButtons {
+  margin-top: 10px;
+  display: inline-flex;
+  gap: 15px;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}

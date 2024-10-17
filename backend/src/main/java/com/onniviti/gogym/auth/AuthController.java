@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,10 +52,12 @@ public class AuthController {
             return ResponseEntity.ok(Map.of(
                     "firstName", user.getFirstName(),
                     "lastName", user.getLastName(),
-                    "email", user.getEmail()
+                    "email", user.getEmail(),
+                    "id", user.getId()
             ));
 
-        } catch (UsernameNotFoundException e) {
+        }
+        catch (UsernameNotFoundException e) {
             // Return 404 Not Found if the user does not exist
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
 
@@ -64,7 +67,7 @@ public class AuthController {
 
         } catch (Exception e) {
             // Catch any other exceptions and return 500 Internal Server Error
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
@@ -76,7 +79,9 @@ public class AuthController {
             return ResponseEntity.ok(Map.of(
                     "firstName", user.getFirstName(),
                     "lastName", user.getLastName(),
-                    "email", user.getEmail()
+                    "email", user.getEmail(),
+                    "id", user.getId()
+
             ));
         }
 

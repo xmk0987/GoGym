@@ -7,9 +7,9 @@ import EyeIcon from "../../assets/icons/EyeIcon";
 import Notification from "../Notification/Notification";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
-import { setMessage } from "../../redux/notification/notificationSlice";
 import { loginUser } from "../../redux/auth/authThunks";
 import { useAuthenticate } from "../../hooks/useAuthenticate";
+import useSendMessage from "../../hooks/useSendMessage";
 
 interface FormValues {
   email: string;
@@ -22,6 +22,7 @@ const Login: React.FC = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const sendMessage = useSendMessage();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,21 +35,11 @@ const Login: React.FC = () => {
     const confirmed = params.get("confirmed");
 
     if (confirmed === "true") {
-      dispatch(
-        setMessage({
-          message: "Your email has been confirmed! You can now log in.",
-          error: false,
-        })
-      );
+      sendMessage("Your email has been confirmed! You can now log in.", false);
     } else if (confirmed === "false") {
-      dispatch(
-        setMessage({
-          message: "There was an issue confirming your email.",
-          error: true,
-        })
-      );
+      sendMessage("There was an issue confirming your email.");
     }
-  }, [dispatch, location]);
+  }, [dispatch, location, sendMessage]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
