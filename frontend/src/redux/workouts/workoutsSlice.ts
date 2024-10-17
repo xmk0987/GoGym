@@ -141,10 +141,10 @@ const workouts = createSlice({
         );
 
         if (workoutIndex !== -1) {
-          if (!state.workouts[workoutIndex].workoutExercises) {
-            state.workouts[workoutIndex].workoutExercises = []; // Initialize as an empty array
+          if (!state.workouts[workoutIndex].progress.exercises) {
+            state.workouts[workoutIndex].progress.exercises = []; // Initialize as an empty array
           }
-          state.workouts[workoutIndex].workoutExercises.push(addedExercise);
+          state.workouts[workoutIndex].progress.exercises.push(addedExercise);
         }
       })
       .addCase(addExercise.rejected, (state) => {

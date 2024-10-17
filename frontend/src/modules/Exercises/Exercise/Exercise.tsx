@@ -1,8 +1,8 @@
-import { ExerciseWorkout } from "../../../types/Workouts";
+import { WorkoutProgressExercise } from "../../../types/Workouts";
 import styles from "./Exercise.module.css";
 
 interface ExerciseProps {
-  exerciseWorkout: ExerciseWorkout;
+  exerciseWorkout: WorkoutProgressExercise;
 }
 
 const Exercise: React.FC<ExerciseProps> = ({ exerciseWorkout }) => {
@@ -11,19 +11,21 @@ const Exercise: React.FC<ExerciseProps> = ({ exerciseWorkout }) => {
       <span></span>
       <div className={styles["info"]}>
         <p>
-          <strong>{exerciseWorkout.exercise.name}</strong>
+          <strong>{exerciseWorkout.exercise.exercise.name}</strong>
         </p>
         <p>
-          {`${exerciseWorkout.sets} x ${
-            exerciseWorkout.failure ? "Failure" : exerciseWorkout.reps
-          } x ${exerciseWorkout.weight}kg`}{" "}
+          {`${exerciseWorkout.exercise.sets} x ${
+            exerciseWorkout.exercise.sets
+              ? "Failure"
+              : exerciseWorkout.exercise.reps
+          } x ${exerciseWorkout.exercise.weight} kg`}{" "}
         </p>
       </div>
       <div className={styles["sets"]}>
         <p>
           <strong>Sets Done:</strong>
         </p>
-        <p> 2 / 3</p>
+        <p>{`${exerciseWorkout.setsDone} / ${exerciseWorkout.exercise.sets}`}</p>
       </div>
     </div>
   );

@@ -1,7 +1,9 @@
 package com.onniviti.gogym.workoutProgress.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.onniviti.gogym.workouts.models.WorkoutExerciseTemplate;
 import jakarta.persistence.*;
+
 
 @Entity
 public class WorkoutExerciseProgress {
@@ -11,21 +13,22 @@ public class WorkoutExerciseProgress {
 
     @ManyToOne
     @JoinColumn(name = "exercise_template_id")
-    private WorkoutExerciseTemplate workoutExerciseTemplate;
+    private WorkoutExerciseTemplate exercise;  // Renamed to 'exercise' to match usage
 
     @ManyToOne
     @JoinColumn(name = "workout_progress_id")
+    @JsonIgnore
     private WorkoutProgress workoutProgress;
 
     private int setsDone;
     private int repsDone;
     private int weightUsed;
 
-    public WorkoutExerciseProgress() {
-    }
+    // Constructors
+    public WorkoutExerciseProgress() {}
 
-    public WorkoutExerciseProgress(WorkoutExerciseTemplate workoutExerciseTemplate, WorkoutProgress workoutProgress, int setsDone, int repsDone, int weightUsed) {
-        this.workoutExerciseTemplate = workoutExerciseTemplate;
+    public WorkoutExerciseProgress(WorkoutExerciseTemplate exercise, WorkoutProgress workoutProgress, int setsDone, int repsDone, int weightUsed) {
+        this.exercise = exercise;
         this.workoutProgress = workoutProgress;
         this.setsDone = setsDone;
         this.repsDone = repsDone;
@@ -33,7 +36,6 @@ public class WorkoutExerciseProgress {
     }
 
     // Getters and setters
-
     public Long getId() {
         return id;
     }
@@ -42,12 +44,12 @@ public class WorkoutExerciseProgress {
         this.id = id;
     }
 
-    public WorkoutExerciseTemplate getWorkoutExerciseTemplate() {
-        return workoutExerciseTemplate;
+    public WorkoutExerciseTemplate getExercise() {
+        return exercise;
     }
 
-    public void setWorkoutExerciseTemplate(WorkoutExerciseTemplate workoutExerciseTemplate) {
-        this.workoutExerciseTemplate = workoutExerciseTemplate;
+    public void setExercise(WorkoutExerciseTemplate exercise) {
+        this.exercise = exercise;
     }
 
     public WorkoutProgress getWorkoutProgress() {

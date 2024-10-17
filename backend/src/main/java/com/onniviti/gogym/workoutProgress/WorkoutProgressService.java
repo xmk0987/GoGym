@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -46,55 +47,77 @@ public class WorkoutProgressService {
 
     @Transactional
     public WorkoutProgress createWorkoutProgressForDate(WorkoutTemplate workout, LocalDate scheduledDate) {
-        boolean exists = workoutProgressRepository.existsByWorkoutAndDate(workout, scheduledDate);
+        // Check if any WorkoutProgress exists for the given workout
+        List<WorkoutProgress> existingProgresses = workoutProgressRepository.findByWorkout(workout);
 
-        if (!exists) {
-            // Create new WorkoutProgress
-            WorkoutProgress workoutProgress = new WorkoutProgress();
-            workoutProgress.setWorkout(workout);
-            workoutProgress.setCompleted(false);
-            workoutProgress.setDate(scheduledDate);
+        if (!existingProgresses.isEmpty()) {
+            // Fetch the existing progress (you can choose to get the latest, first, or any specific logic)
+            WorkoutProgress existingProgress = existingProgresses.get(0);
 
-            // Save the WorkoutProgress
-            workoutProgressRepository.save(workoutProgress);
-
-            // Create WorkoutExerciseProgress for each exercise in the workout
-            if (workout.getWorkoutExercises() != null) {
-                for (WorkoutExerciseTemplate exerciseTemplate : workout.getWorkoutExercises()) {
-                    createWorkoutExerciseProgress(workoutProgress, exerciseTemplate);
-                }
-            }
-
-            return workoutProgress;
-        } else {
-            // Fetch and return the existing progress if it already exists
-            return workoutProgressRepository.findByWorkoutAndDate(workout, scheduledDate);
+            // Disassociate the old progress from the workout by nullifying the workout reference
+            existingProgress.setWorkout(null);
+            workoutProgressRepository.save(existingProgress);
         }
+
+        // Now create a new progress
+        WorkoutProgress newWorkoutProgress = new WorkoutProgress();
+        newWorkoutProgress.setWorkout(workout); // Set the current workout
+        newWorkoutProgress.setCompleted(false);
+        newWorkoutProgress.setDate(scheduledDate);
+        newWorkoutProgress.setUserId(workout.getUserId());
+
+        // Save the new WorkoutProgress with a new ID and return it
+        workoutProgressRepository.save(newWorkoutProgress);
+
+        return newWorkoutProgress;
     }
 
 
-    // Method to create exercise progress for a workout progress
-    private void createWorkoutExerciseProgress(WorkoutProgress workoutProgress, WorkoutExerciseTemplate exerciseTemplate) {
-        boolean exists = workoutExerciseProgressRepository.existsByWorkoutProgressAndWorkoutExerciseTemplate(workoutProgress, exerciseTemplate);
+
+// Method to create exercise progress for a workout progress
+    private WorkoutExerciseProgress createWorkoutExerciseProgress(WorkoutProgress workoutProgress, WorkoutExerciseTemplate exerciseTemplate) {
+        boolean exists = workoutExerciseProgressRepository.existsByWorkoutProgressAndExercise(workoutProgress, exerciseTemplate);
         if (!exists) {
             WorkoutExerciseProgress newExerciseProgress = new WorkoutExerciseProgress();
-            newExerciseProgress.setWorkoutExerciseTemplate(exerciseTemplate);
+            newExerciseProgress.setExercise(exerciseTemplate);
             newExerciseProgress.setWorkoutProgress(workoutProgress);
             newExerciseProgress.setSetsDone(0);
             newExerciseProgress.setRepsDone(0);
             newExerciseProgress.setWeightUsed(exerciseTemplate.getWeight());
-            workoutExerciseProgressRepository.save(newExerciseProgress);
+
+            // Save the new WorkoutExerciseProgress
+            WorkoutExerciseProgress savedExerciseProgress = workoutExerciseProgressRepository.save(newExerciseProgress);
+
+            // Add the new exercise progress to the workoutProgress's exercises list
+            if (workoutProgress.getExercises() == null) {
+                workoutProgress.setExercises(new ArrayList<>());
+            }
+            workoutProgress.getExercises().add(savedExerciseProgress);
+
+            // Save the updated WorkoutProgress
+            workoutProgressRepository.save(workoutProgress);
+
+            return savedExerciseProgress;
         }
+        return null;  // Return null if the progress already exists
     }
 
+
     @Transactional
-    public void createExerciseProgressForExistingWorkout(WorkoutExerciseTemplate newExerciseTemplate) {
+    public WorkoutExerciseProgress createExerciseProgressForExistingWorkout(WorkoutExerciseTemplate newExerciseTemplate) {
         WorkoutTemplate workoutTemplate = newExerciseTemplate.getWorkout();
         List<WorkoutProgress> existingWorkoutProgresses = workoutProgressRepository.findByWorkout(workoutTemplate);
 
+        WorkoutExerciseProgress latestExerciseProgress = null;
+
+        // For each workout progress, create a new exercise progress
         for (WorkoutProgress workoutProgress : existingWorkoutProgresses) {
-            createWorkoutExerciseProgress(workoutProgress, newExerciseTemplate);
+            latestExerciseProgress = createWorkoutExerciseProgress(workoutProgress, newExerciseTemplate);
         }
+
+        // Return the latest created WorkoutExerciseProgress
+        return latestExerciseProgress;
     }
+
 
 }

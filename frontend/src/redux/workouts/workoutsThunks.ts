@@ -1,7 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { handleError } from "../../utils/errors";
 import { setMessage } from "../notification/notificationSlice";
-import { ExerciseWorkout, Workout, Workouts } from "../../types/Workouts";
+import {
+  Workout,
+  WorkoutProgressExercise,
+  Workouts,
+} from "../../types/Workouts";
 import { workoutsService } from "../../api/workoutsService";
 
 export const getWorkouts = createAsyncThunk<Workouts, number>(
@@ -116,7 +120,7 @@ export const updateWorkout = createAsyncThunk<Workout, Workout>(
 );
 
 export const addExercise = createAsyncThunk<
-  { exercise: ExerciseWorkout; workoutId: number },
+  { exercise: WorkoutProgressExercise; workoutId: number },
   {
     workoutId: number;
     sets: number;

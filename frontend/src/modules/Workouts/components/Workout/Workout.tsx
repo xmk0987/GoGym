@@ -53,7 +53,6 @@ const Workout = () => {
     setAddExercise(!addExercise);
   };
 
-  console.log(currentWorkout);
   return (
     <>
       <Header />
@@ -62,7 +61,7 @@ const Workout = () => {
           <>
             <WorkoutCard workout={currentWorkout} opened={true} selected />
             <section className={styles["exercises"]}>
-              {currentWorkout.workoutExercises?.map((exerciseWorkout) => (
+              {currentWorkout.progress.exercises?.map((exerciseWorkout) => (
                 <Exercise
                   exerciseWorkout={exerciseWorkout}
                   key={exerciseWorkout.id}

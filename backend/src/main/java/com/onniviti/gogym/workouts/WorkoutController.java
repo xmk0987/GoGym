@@ -1,5 +1,6 @@
 package com.onniviti.gogym.workouts;
 
+import com.onniviti.gogym.workoutProgress.models.WorkoutExerciseProgress;
 import com.onniviti.gogym.workouts.models.WorkoutExerciseTemplate;
 import com.onniviti.gogym.workouts.models.WorkoutTemplate;
 import com.onniviti.gogym.workouts.requests.AddExerciseRequest;
@@ -33,7 +34,7 @@ public class WorkoutController {
     }
 
     @GetMapping("/{userId}/{workoutId}")
-    public WorkoutTemplate getWorkouts(@PathVariable Long userId, @PathVariable Long workoutId) {
+    public WorkoutTemplate getWorkout(@PathVariable Long userId, @PathVariable Long workoutId) {
         return workoutService.getWorkout(userId , workoutId);
     }
 
@@ -43,11 +44,11 @@ public class WorkoutController {
     }
 
     @PostMapping("/{workoutId}/exercise")
-    public ResponseEntity<WorkoutExerciseTemplate> addExerciseToWorkout(
+    public ResponseEntity<WorkoutExerciseProgress> addExerciseToWorkout(
             @PathVariable Long workoutId,
             @RequestBody AddExerciseRequest addExerciseRequest
     ) {
-        WorkoutExerciseTemplate updatedWorkout = workoutService.addExerciseToWorkout(
+        WorkoutExerciseProgress updatedWorkout = workoutService.addExerciseToWorkout(
                 workoutId,
                 addExerciseRequest.getExerciseId(),
                 addExerciseRequest.getSets(),

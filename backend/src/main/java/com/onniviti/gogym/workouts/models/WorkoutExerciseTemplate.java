@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.onniviti.gogym.exercises.ExerciseTemplate;
 import jakarta.persistence.*;
 
+
 @Entity
 public class WorkoutExerciseTemplate {
 
@@ -18,7 +19,7 @@ public class WorkoutExerciseTemplate {
 
     @ManyToOne
     @JoinColumn(name = "exercise_id")
-    private ExerciseTemplate exercise;
+    private ExerciseTemplate exercise;  // This is correctly named 'exercise'
 
     private int sets;
     private int reps;
@@ -26,9 +27,7 @@ public class WorkoutExerciseTemplate {
     private boolean isFailure;
 
     // Constructors
-    public WorkoutExerciseTemplate() {
-
-    }
+    public WorkoutExerciseTemplate() {}
 
     public WorkoutExerciseTemplate(WorkoutTemplate workout, ExerciseTemplate exercise, int sets, int reps, int weight, boolean isFailure) {
         this.workout = workout;

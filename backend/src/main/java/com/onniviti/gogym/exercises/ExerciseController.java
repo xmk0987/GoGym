@@ -21,7 +21,6 @@ public class ExerciseController {
 
     @GetMapping()
     public List<ExerciseTemplate> getExercises() {
-        System.out.println("Request made");
         return exerciseService.getExercises();
     }
 

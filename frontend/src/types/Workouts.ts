@@ -4,10 +4,34 @@ export interface Workout {
   id: number;
   userId: number;
   name: string;
-  workoutExercises: ExerciseWorkout[];
   dayOfWorkout: string;
   timeOfWorkout: string;
   progress: WorkoutProgress;
+}
+
+export interface WorkoutProgress {
+  id: number;
+  userId: number;
+  completed: boolean;
+  date: Date;
+  exercises: WorkoutProgressExercise[];
+}
+
+export interface WorkoutProgressExercise {
+  exercise: ExerciseWorkout;
+  id: number;
+  repsDone: number;
+  setsDone: number;
+  weightUsed: number;
+}
+
+export interface ExerciseWorkout {
+  sets: number;
+  reps: number;
+  id: number;
+  failure: boolean;
+  weight: number;
+  exercise: Exercise;
 }
 
 export interface Exercise {
@@ -19,19 +43,4 @@ export interface Exercise {
   difficulty: string;
   instructions: string;
   musclesList: string[];
-}
-
-export interface ExerciseWorkout {
-  id: number;
-  reps: number;
-  sets: number;
-  failure: boolean;
-  exercise: Exercise;
-  weight: number;
-}
-
-export interface WorkoutProgress {
-  id: number;
-  completed: boolean;
-  date: Date;
 }

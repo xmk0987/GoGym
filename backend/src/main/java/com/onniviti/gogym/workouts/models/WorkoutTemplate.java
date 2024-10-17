@@ -3,9 +3,6 @@ package com.onniviti.gogym.workouts.models;
 import com.onniviti.gogym.workoutProgress.models.WorkoutProgress;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 public class WorkoutTemplate {
 
@@ -19,9 +16,6 @@ public class WorkoutTemplate {
 
     @Column(name = "name")  // Maps to "name" in the database (same name)
     private String name;
-
-   @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-   private List<WorkoutExerciseTemplate> workoutExercises;
 
     @OneToOne(mappedBy ="workout", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private WorkoutProgress progress;
@@ -46,7 +40,6 @@ public class WorkoutTemplate {
         this.name = name;
         this.dayOfWorkout = dayOfWorkout;
         this.timeOfWorkout = timeOfWorkout;
-        this.workoutExercises = new ArrayList<>();
     }
 
     // Getters and Setters
@@ -74,14 +67,6 @@ public class WorkoutTemplate {
     public void setName(String name) {
         this.name = name;
     }
-
-      public List<WorkoutExerciseTemplate> getWorkoutExercises() {
-           return workoutExercises;
-       }
-
-    public void setWorkoutExercises(List<WorkoutExerciseTemplate> workoutExercises) {
-        this.workoutExercises = workoutExercises;
-     }
 
     public DayOfWorkout getDayOfWorkout() {
         return dayOfWorkout;

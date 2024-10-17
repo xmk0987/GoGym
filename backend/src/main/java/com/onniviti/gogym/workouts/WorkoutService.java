@@ -3,6 +3,7 @@ package com.onniviti.gogym.workouts;
 import com.onniviti.gogym.exercises.ExerciseRepository;
 import com.onniviti.gogym.exercises.ExerciseTemplate;
 import com.onniviti.gogym.workoutProgress.WorkoutProgressService;
+import com.onniviti.gogym.workoutProgress.models.WorkoutExerciseProgress;
 import com.onniviti.gogym.workoutProgress.models.WorkoutProgress;
 import com.onniviti.gogym.workoutProgress.repository.WorkoutProgressRepository;
 import com.onniviti.gogym.workouts.models.WorkoutExerciseTemplate;
@@ -76,12 +77,8 @@ public class WorkoutService {
 
         for (WorkoutTemplate workout : workouts) {
             WorkoutProgress progress = workoutProgressRepository.findLatestProgressByWorkout(workout);
-            System.out.println("Progress found in get workouts");
-            System.out.println(progress.getDate());
             workout.setProgress(progress);
         }
-
-        System.out.println(workouts);
         return workouts;
     }
 
@@ -94,11 +91,19 @@ public class WorkoutService {
         existingWorkout.setDayOfWorkout(updatedWorkout.getDayOfWorkout());
         existingWorkout.setTimeOfWorkout(updatedWorkout.getTimeOfWorkout());
 
-        return workoutRepository.save(existingWorkout);
+        WorkoutTemplate savedWorkout =  workoutRepository.save(existingWorkout);
+
+
+        // TODO Need to move the exercise progress templates to this new workout
+        // Create a new progress for the updated workout if it doesn't exist
+        WorkoutProgress createdProgress = createProgress(savedWorkout);
+        savedWorkout.setProgress(createdProgress);
+
+        return savedWorkout;
     }
 
     @Transactional
-    public WorkoutExerciseTemplate addExerciseToWorkout(Long workoutId, Long exerciseId, int sets, int reps, int weight, boolean isFailure) {
+    public WorkoutExerciseProgress addExerciseToWorkout(Long workoutId, Long exerciseId, int sets, int reps, int weight, boolean isFailure) {
         // Fetch the workout and exercise or throw an exception if not found
         WorkoutTemplate workout = workoutRepository.findById(workoutId)
                 .orElseThrow(() -> new IllegalArgumentException("Workout not found"));
@@ -109,20 +114,13 @@ public class WorkoutService {
         WorkoutExerciseTemplate workoutExerciseTemplate = new WorkoutExerciseTemplate(workout, exercise, sets, reps, weight, isFailure);
         WorkoutExerciseTemplate savedWorkoutExercise = workoutExerciseRepository.save(workoutExerciseTemplate);
 
-        // Update the workoutExercises list in the WorkoutTemplate
-        if (workout.getWorkoutExercises() == null) {
-            workout.setWorkoutExercises(new ArrayList<>());
-        }
-        workout.getWorkoutExercises().add(savedWorkoutExercise);
-
         // Save the WorkoutTemplate to ensure the exercises are properly linked
         workoutRepository.save(workout);
 
-        // Create progress for this new exercise in all existing workout progress entries
-        workoutProgressService.createExerciseProgressForExistingWorkout(savedWorkoutExercise);
-
-        return savedWorkoutExercise;
+        // Return the newly created WorkoutExerciseTemplate
+        return workoutProgressService.createExerciseProgressForExistingWorkout(savedWorkoutExercise);
     }
+
 
 
     public WorkoutTemplate getWorkout(Long userId, Long workoutId) {

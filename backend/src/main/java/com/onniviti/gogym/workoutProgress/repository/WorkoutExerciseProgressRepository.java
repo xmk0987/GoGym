@@ -9,6 +9,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WorkoutExerciseProgressRepository extends JpaRepository<WorkoutExerciseProgress, Long> {
-    boolean existsByWorkoutProgressAndWorkoutExerciseTemplate(WorkoutProgress workoutProgress, WorkoutExerciseTemplate exerciseTemplate);
-
+    boolean existsByWorkoutProgressAndExercise(WorkoutProgress workoutProgress, WorkoutExerciseTemplate exercise);
 }

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.onniviti.gogym.workouts.models.WorkoutTemplate;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+
 
 @Entity
 public class WorkoutProgress {
@@ -17,19 +19,40 @@ public class WorkoutProgress {
     @JsonIgnore
     private WorkoutTemplate workout;
 
+    @OneToMany(mappedBy = "workoutProgress", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<WorkoutExerciseProgress> exercises;  // This is correctly named 'exercises'
+
     private boolean completed;
     private LocalDate date;
 
-    public WorkoutProgress(WorkoutTemplate workoutTemplate, boolean completed, LocalDate date) {
-        this.workout = workoutTemplate;
+    @Column(name = "user_id")
+    private Long userId;
+
+    public WorkoutProgress(WorkoutTemplate workout, boolean completed, LocalDate date) {
+        this.workout = workout;
         this.completed = completed;
         this.date = date;
+        this.exercises = new ArrayList<>();
     }
 
-    public WorkoutProgress() {
-    }
+    public WorkoutProgress() {}
 
     // Getters and setters
+    public List<WorkoutExerciseProgress> getExercises() {
+        return exercises;
+    }
+
+    public void setExercises(List<WorkoutExerciseProgress> exercises) {
+        this.exercises = exercises;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public Long getId() {
         return id;
@@ -62,5 +85,4 @@ public class WorkoutProgress {
     public void setDate(LocalDate date) {
         this.date = date;
     }
-
 }
