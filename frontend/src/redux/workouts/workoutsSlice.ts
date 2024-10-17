@@ -61,6 +61,7 @@ const workouts = createSlice({
         state.success = false;
       })
       .addCase(getWorkouts.fulfilled, (state, action) => {
+        console.log(action.payload);
         state.loading = false;
         state.success = true;
         state.workouts = action.payload;

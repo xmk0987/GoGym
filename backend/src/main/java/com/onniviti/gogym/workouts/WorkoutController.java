@@ -29,7 +29,6 @@ public class WorkoutController {
 
     @GetMapping("/{userId}")
     public List<WorkoutTemplate> getWorkouts(@PathVariable Long userId) {
-        System.out.println("Get user workouts");
         return workoutService.getWorkouts(userId);
     }
 
@@ -40,7 +39,6 @@ public class WorkoutController {
 
     @PutMapping()
     public WorkoutTemplate updateWorkout(@RequestBody WorkoutTemplate workout) {
-        System.out.println("Update workout");
         return workoutService.updateWorkout(workout.getId(), workout);
     }
 

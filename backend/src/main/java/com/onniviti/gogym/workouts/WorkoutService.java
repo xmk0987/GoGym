@@ -3,6 +3,8 @@ package com.onniviti.gogym.workouts;
 import com.onniviti.gogym.exercises.ExerciseRepository;
 import com.onniviti.gogym.exercises.ExerciseTemplate;
 import com.onniviti.gogym.workoutProgress.WorkoutProgressService;
+import com.onniviti.gogym.workoutProgress.models.WorkoutProgress;
+import com.onniviti.gogym.workoutProgress.repository.WorkoutProgressRepository;
 import com.onniviti.gogym.workouts.models.WorkoutExerciseTemplate;
 import com.onniviti.gogym.workouts.models.WorkoutTemplate;
 import jakarta.transaction.Transactional;
@@ -23,33 +25,66 @@ public class WorkoutService {
     private final ExerciseRepository exerciseRepository;
     private final WorkoutExerciseRepository workoutExerciseRepository;
     private final WorkoutProgressService workoutProgressService;
+    private final WorkoutProgressRepository workoutProgressRepository;
 
     @Autowired
-    public WorkoutService(WorkoutRepository workoutRepository, ExerciseRepository exerciseRepository, WorkoutExerciseRepository workoutExerciseRepository, WorkoutProgressService workoutProgressService) {
+    public WorkoutService(WorkoutRepository workoutRepository, ExerciseRepository exerciseRepository, WorkoutExerciseRepository workoutExerciseRepository, WorkoutProgressService workoutProgressService, WorkoutProgressRepository workoutProgressRepository) {
         this.workoutRepository = workoutRepository;
         this.exerciseRepository = exerciseRepository;
         this.workoutExerciseRepository = workoutExerciseRepository;
         this.workoutProgressService = workoutProgressService;
+        this.workoutProgressRepository = workoutProgressRepository;
     }
 
     public WorkoutTemplate saveWorkout(WorkoutTemplate workout) {
+        // Save the workout
         WorkoutTemplate savedWorkout = workoutRepository.save(workout);
 
-        createProgress(savedWorkout);
+        // Create progress for the saved workout
+        WorkoutProgress createdProgress = createProgress(savedWorkout);
 
+        // Set the created progress to the saved workout
+        savedWorkout.setProgress(createdProgress);
+
+        // Return the workout with the progress set
         return savedWorkout;
     }
 
-    public void createProgress (WorkoutTemplate workout) {
-        String today = LocalDate.now().getDayOfWeek().toString();
-        if (today.equalsIgnoreCase(workout.getDayOfWorkout().toString())) {
-            workoutProgressService.createWorkoutProgress(workout);
+    public WorkoutProgress createProgress(WorkoutTemplate workout) {
+        LocalDate today = LocalDate.now();
+        DayOfWeek todayDayOfWeek = today.getDayOfWeek();
+        DayOfWeek workoutDayOfWeek = DayOfWeek.valueOf(workout.getDayOfWorkout().toString().toUpperCase());
+
+        // Calculate the number of days until the workout
+        int daysUntilWorkout = (workoutDayOfWeek.getValue() - todayDayOfWeek.getValue() + 7) % 7;
+
+        // If the workout day is today, set the workoutDate to today
+        LocalDate workoutDate = today.plusDays(daysUntilWorkout);
+
+        if (daysUntilWorkout == 0) {
+            System.out.println("Creating progress for today: " + today);
+        } else {
+            System.out.println("Creating progress for " + workoutDayOfWeek + " (Date: " + workoutDate + ")");
         }
+
+        // Create progress for the calculated workout date (either today or a future date)
+        return workoutProgressService.createWorkoutProgressForDate(workout, workoutDate);
     }
 
     public List<WorkoutTemplate> getWorkouts(Long userId) {
-        return workoutRepository.findByUserId(userId);
+        List<WorkoutTemplate> workouts = workoutRepository.findByUserId(userId);
+
+        for (WorkoutTemplate workout : workouts) {
+            WorkoutProgress progress = workoutProgressRepository.findLatestProgressByWorkout(workout);
+            System.out.println("Progress found in get workouts");
+            System.out.println(progress.getDate());
+            workout.setProgress(progress);
+        }
+
+        System.out.println(workouts);
+        return workouts;
     }
+
 
     public WorkoutTemplate updateWorkout(Long id, WorkoutTemplate updatedWorkout) {
         WorkoutTemplate existingWorkout = workoutRepository.findById(id)
@@ -98,7 +133,16 @@ public class WorkoutService {
             throw new IllegalStateException("Not your workout");
         }
 
+        WorkoutProgress progress = workoutProgressRepository.findLatestProgressByWorkout(workout);
+        if (progress != null) {
+            workout.setProgress(progress);
+            System.out.println("Progress found and set: " + progress.getDate());
+        } else {
+            System.out.println("No progress found for workout: " + workout.getId());
+        }
+
         return workout;
     }
+
 
 }

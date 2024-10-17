@@ -1,7 +1,9 @@
 package com.onniviti.gogym.workouts.models;
 
+import com.onniviti.gogym.workoutProgress.models.WorkoutProgress;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,6 +23,9 @@ public class WorkoutTemplate {
    @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
    private List<WorkoutExerciseTemplate> workoutExercises;
 
+    @OneToOne(mappedBy ="workout", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private WorkoutProgress progress;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "day_of_workout")  // Maps to "day_of_workout" in the database
     private DayOfWorkout dayOfWorkout;
@@ -36,12 +41,12 @@ public class WorkoutTemplate {
     public WorkoutTemplate() {}
 
     // Parameterized constructor
-    public WorkoutTemplate(Long userId, String name, List<WorkoutExerciseTemplate> workoutExercises, DayOfWorkout dayOfWorkout, String timeOfWorkout) {
+    public WorkoutTemplate(Long userId, String name, DayOfWorkout dayOfWorkout, String timeOfWorkout) {
         this.userId = userId;
         this.name = name;
-        //this.workoutExercises = workoutExercises;
         this.dayOfWorkout = dayOfWorkout;
         this.timeOfWorkout = timeOfWorkout;
+        this.workoutExercises = new ArrayList<>();
     }
 
     // Getters and Setters
@@ -74,9 +79,9 @@ public class WorkoutTemplate {
            return workoutExercises;
        }
 
-public void setWorkoutExercises(List<WorkoutExerciseTemplate> workoutExercises) {
-    this.workoutExercises = workoutExercises;
- }
+    public void setWorkoutExercises(List<WorkoutExerciseTemplate> workoutExercises) {
+        this.workoutExercises = workoutExercises;
+     }
 
     public DayOfWorkout getDayOfWorkout() {
         return dayOfWorkout;
@@ -92,5 +97,13 @@ public void setWorkoutExercises(List<WorkoutExerciseTemplate> workoutExercises) 
 
     public void setTimeOfWorkout(String timeOfWorkout) {
         this.timeOfWorkout = timeOfWorkout;
+    }
+
+    public WorkoutProgress getProgress() {
+        return progress;
+    }
+
+    public void setProgress(WorkoutProgress progress) {
+        this.progress = progress;
     }
 }

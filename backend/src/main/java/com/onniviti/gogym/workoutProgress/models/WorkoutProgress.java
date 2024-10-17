@@ -1,5 +1,6 @@
 package com.onniviti.gogym.workoutProgress.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.onniviti.gogym.workouts.models.WorkoutTemplate;
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -13,21 +14,19 @@ public class WorkoutProgress {
 
     @ManyToOne
     @JoinColumn(name = "workout_id")
-    private WorkoutTemplate workoutTemplate;
+    @JsonIgnore
+    private WorkoutTemplate workout;
 
     private boolean completed;
     private LocalDate date;
 
-    @OneToMany(mappedBy = "workoutProgress", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<WorkoutExerciseProgress> exerciseProgressList;
-
-    public WorkoutProgress() {
-    }
-
     public WorkoutProgress(WorkoutTemplate workoutTemplate, boolean completed, LocalDate date) {
-        this.workoutTemplate = workoutTemplate;
+        this.workout = workoutTemplate;
         this.completed = completed;
         this.date = date;
+    }
+
+    public WorkoutProgress() {
     }
 
     // Getters and setters
@@ -40,12 +39,12 @@ public class WorkoutProgress {
         this.id = id;
     }
 
-    public WorkoutTemplate getWorkoutTemplate() {
-        return workoutTemplate;
+    public WorkoutTemplate getWorkout() {
+        return workout;
     }
 
-    public void setWorkoutTemplate(WorkoutTemplate workoutTemplate) {
-        this.workoutTemplate = workoutTemplate;
+    public void setWorkout(WorkoutTemplate workout) {
+        this.workout = workout;
     }
 
     public boolean isCompleted() {
@@ -64,11 +63,4 @@ public class WorkoutProgress {
         this.date = date;
     }
 
-    public List<WorkoutExerciseProgress> getExerciseProgressList() {
-        return exerciseProgressList;
-    }
-
-    public void setExerciseProgressList(List<WorkoutExerciseProgress> exerciseProgressList) {
-        this.exerciseProgressList = exerciseProgressList;
-    }
 }

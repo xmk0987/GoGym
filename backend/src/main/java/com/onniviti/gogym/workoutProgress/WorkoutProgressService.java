@@ -45,28 +45,33 @@ public class WorkoutProgressService {
     }
 
     @Transactional
-    public void createWorkoutProgress(WorkoutTemplate workout) {
-        LocalDate today = LocalDate.now();
-        createWorkoutProgressForDate(workout, today);
-    }
+    public WorkoutProgress createWorkoutProgressForDate(WorkoutTemplate workout, LocalDate scheduledDate) {
+        boolean exists = workoutProgressRepository.existsByWorkoutAndDate(workout, scheduledDate);
 
-    @Transactional
-    private void createWorkoutProgressForDate(WorkoutTemplate workout, LocalDate scheduledDate) {
-        boolean exists = workoutProgressRepository.existsByWorkoutTemplateAndDate(workout, scheduledDate);
         if (!exists) {
+            // Create new WorkoutProgress
             WorkoutProgress workoutProgress = new WorkoutProgress();
-            workoutProgress.setWorkoutTemplate(workout);
+            workoutProgress.setWorkout(workout);
             workoutProgress.setCompleted(false);
             workoutProgress.setDate(scheduledDate);
+
+            // Save the WorkoutProgress
             workoutProgressRepository.save(workoutProgress);
 
+            // Create WorkoutExerciseProgress for each exercise in the workout
             if (workout.getWorkoutExercises() != null) {
                 for (WorkoutExerciseTemplate exerciseTemplate : workout.getWorkoutExercises()) {
                     createWorkoutExerciseProgress(workoutProgress, exerciseTemplate);
                 }
             }
+
+            return workoutProgress;
+        } else {
+            // Fetch and return the existing progress if it already exists
+            return workoutProgressRepository.findByWorkoutAndDate(workout, scheduledDate);
         }
     }
+
 
     // Method to create exercise progress for a workout progress
     private void createWorkoutExerciseProgress(WorkoutProgress workoutProgress, WorkoutExerciseTemplate exerciseTemplate) {
@@ -85,7 +90,7 @@ public class WorkoutProgressService {
     @Transactional
     public void createExerciseProgressForExistingWorkout(WorkoutExerciseTemplate newExerciseTemplate) {
         WorkoutTemplate workoutTemplate = newExerciseTemplate.getWorkout();
-        List<WorkoutProgress> existingWorkoutProgresses = workoutProgressRepository.findByWorkoutTemplate(workoutTemplate);
+        List<WorkoutProgress> existingWorkoutProgresses = workoutProgressRepository.findByWorkout(workoutTemplate);
 
         for (WorkoutProgress workoutProgress : existingWorkoutProgresses) {
             createWorkoutExerciseProgress(workoutProgress, newExerciseTemplate);
