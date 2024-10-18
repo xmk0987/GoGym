@@ -15,7 +15,7 @@ const Exercise: React.FC<ExerciseProps> = ({ exerciseWorkout }) => {
         </p>
         <p>
           {`${exerciseWorkout.exercise.sets} x ${
-            exerciseWorkout.exercise.sets
+            exerciseWorkout.exercise.failure
               ? "Failure"
               : exerciseWorkout.exercise.reps
           } x ${exerciseWorkout.exercise.weight} kg`}{" "}
