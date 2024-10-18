@@ -11,26 +11,21 @@ const ProtectedRoutes = () => {
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-
-    if (!accessToken) {
-      dispatch(checkAuthStatus())
-        .unwrap()
-        .then((response) => {
-          if (response) {
-            setAuthenticated(true);
-          } else {
-            navigate("/login");
-          }
-        })
-        .catch(() => {
+    dispatch(checkAuthStatus())
+      .unwrap()
+      .then((response) => {
+        if (response) {
+          setAuthenticated(true);
+        } else {
+          localStorage.removeItem("accessToken");
           navigate("/login");
-        })
-        .finally(() => setCheckingAuth(false));
-    } else {
-      setAuthenticated(true);
-      setCheckingAuth(false);
-    }
+        }
+      })
+      .catch(() => {
+        localStorage.removeItem("accessToken");
+        navigate("/login");
+      })
+      .finally(() => setCheckingAuth(false));
   }, [dispatch, navigate]);
 
   if (checkingAuth) {
