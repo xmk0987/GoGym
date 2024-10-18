@@ -1,25 +1,13 @@
-import axios from "axios";
-import { BASE_URL } from "./apiConfig";
+import { axiosInstance } from "./authService";
 
 export const workoutsService = {
   getWorkouts: async (userId: number) => {
-    const response = await axios.get(`${BASE_URL}/workouts/${userId}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-    });
+    const response = await axiosInstance.get(`/workouts/${userId}`);
     return response.data;
   },
   getWorkout: async (workoutId: number, userId: number) => {
-    const response = await axios.get(
-      `${BASE_URL}/workouts/${userId}/${workoutId}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
+    const response = await axiosInstance.get(
+      `/workouts/${userId}/${workoutId}`
     );
     return response.data;
   },
@@ -34,21 +22,12 @@ export const workoutsService = {
     dayOfWorkout: string;
     userId: number;
   }) => {
-    const response = await axios.post(
-      `${BASE_URL}/workouts`,
-      {
-        name,
-        timeOfWorkout,
-        dayOfWorkout,
-        userId,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
-    );
+    const response = await axiosInstance.post(`/workouts`, {
+      name,
+      timeOfWorkout,
+      dayOfWorkout,
+      userId,
+    });
     return response.data;
   },
   updateWorkout: async ({
@@ -64,22 +43,13 @@ export const workoutsService = {
     dayOfWorkout: string;
     userId: number;
   }) => {
-    const response = await axios.put(
-      `${BASE_URL}/workouts`,
-      {
-        id,
-        name,
-        timeOfWorkout,
-        dayOfWorkout,
-        userId,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
-    );
+    const response = await axiosInstance.put(`/workouts`, {
+      id,
+      name,
+      timeOfWorkout,
+      dayOfWorkout,
+      userId,
+    });
     return response.data;
   },
   addExercise: async ({
@@ -97,20 +67,14 @@ export const workoutsService = {
     weight: number;
     exerciseId: number;
   }) => {
-    const response = await axios.post(
-      `${BASE_URL}/workouts/${workoutId}/exercise`,
+    const response = await axiosInstance.post(
+      `/workouts/${workoutId}/exercise`,
       {
         sets,
         reps,
         isFailure,
         weight,
         exerciseId,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
       }
     );
     return response.data;

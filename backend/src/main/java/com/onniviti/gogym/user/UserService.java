@@ -40,9 +40,10 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public Optional<User> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public Optional<User> findUserByUsername(String email) {
+        return userRepository.findByEmail(email); // This directly returns Optional<User>
     }
+
 
 
     public String signUpUser(User user) {

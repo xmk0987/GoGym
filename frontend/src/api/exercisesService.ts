@@ -1,14 +1,8 @@
-import axios from "axios";
-import { BASE_URL } from "./apiConfig";
+import { axiosInstance } from "./authService";
 
 export const exercisesService = {
   getExercises: async () => {
-    const response = await axios.get(`${BASE_URL}/exercises`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-    });
+    const response = await axiosInstance.get(`/exercises`)
     return response.data;
   },
 };

@@ -1,16 +1,9 @@
-import axios from "axios";
 import { User } from "../types/User";
-import { BASE_URL } from "./apiConfig";
+import { axiosInstance } from "./authService";
 
 export const registrationService = {
   registerUser: async (userData: User) => {
-    console.log("send register", userData);
-    const response = await axios.post(`${BASE_URL}/registration`, userData, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-    });
+    const response = await axiosInstance.post(`/registration`, userData);
     return response.data;
   },
 };

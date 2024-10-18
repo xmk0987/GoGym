@@ -30,6 +30,7 @@ public class WorkoutController {
 
     @GetMapping("/{userId}")
     public List<WorkoutTemplate> getWorkouts(@PathVariable Long userId) {
+        System.out.println("Got to workout controleler");
         return workoutService.getWorkouts(userId);
     }
 

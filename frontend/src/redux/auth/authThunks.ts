@@ -4,6 +4,7 @@ import { handleError } from "../../utils/errors";
 import { setMessage } from "../notification/notificationSlice";
 import { AuthUser } from "../../types/User";
 
+// Login Thunk
 export const loginUser = createAsyncThunk<
   AuthUser,
   { username: string; password: string }
@@ -12,9 +13,30 @@ export const loginUser = createAsyncThunk<
   async ({ username, password }, { dispatch, rejectWithValue }) => {
     try {
       const response = await authService.loginUser(username, password);
-
-      localStorage.setItem("authenticated", "true");
       return response as AuthUser;
+    } catch (error) {
+      const errorMessage = handleError(error);
+
+      // Dispatch error message to the notification slice
+      dispatch(
+        setMessage({
+          message: errorMessage,
+          error: true,
+        })
+      );
+
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+// Check authentication status Thunk
+export const checkAuthStatus = createAsyncThunk<AuthUser | null>(
+  "auth/checkAuthStatus",
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await authService.checkAuthStatus();
+      return response;
     } catch (error) {
       const errorMessage = handleError(error);
 
@@ -30,24 +52,25 @@ export const loginUser = createAsyncThunk<
   }
 );
 
-// Thunk to check if the user is authenticated
-export const checkAuthStatus = createAsyncThunk<AuthUser | null>(
-  "auth/checkAuthStatus",
-  async (_, { dispatch, rejectWithValue }) => {
+// Logout Thunk
+export const logoutUser = createAsyncThunk(
+  "auth/logout",
+  async (_, { dispatch }) => {
     try {
-      const response = await authService.checkAuthStatus();
+      await authService.logout();
 
-      return response;
+      dispatch(
+        setMessage({ message: "Logged out successfully", error: false })
+      );
     } catch (error) {
       const errorMessage = handleError(error);
+
       dispatch(
         setMessage({
           message: errorMessage,
           error: true,
         })
       );
-
-      return rejectWithValue(errorMessage);
     }
   }
 );
