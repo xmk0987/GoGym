@@ -73,50 +73,42 @@ public class WorkoutProgressService {
     }
 
 
-
-// Method to create exercise progress for a workout progress
-    private WorkoutExerciseProgress createWorkoutExerciseProgress(WorkoutProgress workoutProgress, WorkoutExerciseTemplate exerciseTemplate) {
-        boolean exists = workoutExerciseProgressRepository.existsByWorkoutProgressAndExercise(workoutProgress, exerciseTemplate);
+    // Method to create exercise progress for a workout
+    private WorkoutExerciseProgress createWorkoutExerciseProgress(WorkoutTemplate workoutTemplate, WorkoutExerciseTemplate exerciseTemplate) {
+        // Check if an exercise progress already exists for this workout and exercise
+        boolean exists = workoutExerciseProgressRepository.existsByWorkoutTemplateAndExercise(workoutTemplate, exerciseTemplate);
         if (!exists) {
+            // Create a new WorkoutExerciseProgress entry
             WorkoutExerciseProgress newExerciseProgress = new WorkoutExerciseProgress();
-            newExerciseProgress.setExercise(exerciseTemplate);
-            newExerciseProgress.setWorkoutProgress(workoutProgress);
-            newExerciseProgress.setSetsDone(0);
+            newExerciseProgress.setExercise(exerciseTemplate);  // Set the exercise
+            newExerciseProgress.setWorkoutTemplate(workoutTemplate);  // Associate it with the workout
+            newExerciseProgress.setSetsDone(0);  // Initialize progress values
             newExerciseProgress.setRepsDone(0);
             newExerciseProgress.setWeightUsed(exerciseTemplate.getWeight());
 
             // Save the new WorkoutExerciseProgress
             WorkoutExerciseProgress savedExerciseProgress = workoutExerciseProgressRepository.save(newExerciseProgress);
 
-            // Add the new exercise progress to the workoutProgress's exercises list
-            if (workoutProgress.getExercises() == null) {
-                workoutProgress.setExercises(new ArrayList<>());
+            // Add the newly created exercise progress to the list of exercises in WorkoutTemplate
+            if (workoutTemplate.getExercises() == null) {
+                workoutTemplate.setExercises(new ArrayList<>());  // Initialize if null
             }
-            workoutProgress.getExercises().add(savedExerciseProgress);
+            workoutTemplate.getExercises().add(savedExerciseProgress);  // Add the exercise progress
 
-            // Save the updated WorkoutProgress
-            workoutProgressRepository.save(workoutProgress);
+            // Save the updated workout template with the new exercises
+            workoutRepository.save(workoutTemplate);
 
             return savedExerciseProgress;
         }
-        return null;  // Return null if the progress already exists
+        return null;  // Return null if the exercise progress already exists
     }
-
 
     @Transactional
     public WorkoutExerciseProgress createExerciseProgressForExistingWorkout(WorkoutExerciseTemplate newExerciseTemplate) {
         WorkoutTemplate workoutTemplate = newExerciseTemplate.getWorkout();
-        List<WorkoutProgress> existingWorkoutProgresses = workoutProgressRepository.findByWorkout(workoutTemplate);
 
-        WorkoutExerciseProgress latestExerciseProgress = null;
-
-        // For each workout progress, create a new exercise progress
-        for (WorkoutProgress workoutProgress : existingWorkoutProgresses) {
-            latestExerciseProgress = createWorkoutExerciseProgress(workoutProgress, newExerciseTemplate);
-        }
-
-        // Return the latest created WorkoutExerciseProgress
-        return latestExerciseProgress;
+        // Create exercise progress for the workout and return the latest created one
+        return createWorkoutExerciseProgress(workoutTemplate, newExerciseTemplate);
     }
 
 

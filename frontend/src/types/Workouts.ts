@@ -7,6 +7,7 @@ export interface Workout {
   dayOfWorkout: string;
   timeOfWorkout: string;
   progress: WorkoutProgress;
+  exercises: WorkoutProgressExercise[];
 }
 
 export interface WorkoutProgress {
@@ -14,7 +15,6 @@ export interface WorkoutProgress {
   userId: number;
   completed: boolean;
   date: Date;
-  exercises: WorkoutProgressExercise[];
 }
 
 export interface WorkoutProgressExercise {

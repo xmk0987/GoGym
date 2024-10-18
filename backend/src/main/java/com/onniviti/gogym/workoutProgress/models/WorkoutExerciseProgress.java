@@ -2,6 +2,7 @@ package com.onniviti.gogym.workoutProgress.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.onniviti.gogym.workouts.models.WorkoutExerciseTemplate;
+import com.onniviti.gogym.workouts.models.WorkoutTemplate;
 import jakarta.persistence.*;
 
 
@@ -16,9 +17,9 @@ public class WorkoutExerciseProgress {
     private WorkoutExerciseTemplate exercise;  // Renamed to 'exercise' to match usage
 
     @ManyToOne
-    @JoinColumn(name = "workout_progress_id")
+    @JoinColumn(name = "workout_id")
     @JsonIgnore
-    private WorkoutProgress workoutProgress;
+    private WorkoutTemplate workoutTemplate;
 
     private int setsDone;
     private int repsDone;
@@ -27,9 +28,9 @@ public class WorkoutExerciseProgress {
     // Constructors
     public WorkoutExerciseProgress() {}
 
-    public WorkoutExerciseProgress(WorkoutExerciseTemplate exercise, WorkoutProgress workoutProgress, int setsDone, int repsDone, int weightUsed) {
+    public WorkoutExerciseProgress(WorkoutExerciseTemplate exercise, WorkoutTemplate workoutTemplate, int setsDone, int repsDone, int weightUsed) {
         this.exercise = exercise;
-        this.workoutProgress = workoutProgress;
+        this.workoutTemplate = workoutTemplate;
         this.setsDone = setsDone;
         this.repsDone = repsDone;
         this.weightUsed = weightUsed;
@@ -52,12 +53,12 @@ public class WorkoutExerciseProgress {
         this.exercise = exercise;
     }
 
-    public WorkoutProgress getWorkoutProgress() {
-        return workoutProgress;
+    public WorkoutTemplate getWorkoutTemplate() {
+        return workoutTemplate;
     }
 
-    public void setWorkoutProgress(WorkoutProgress workoutProgress) {
-        this.workoutProgress = workoutProgress;
+    public void setWorkoutTemplate(WorkoutTemplate workoutTemplate) {
+        this.workoutTemplate = workoutTemplate;
     }
 
     public int getSetsDone() {

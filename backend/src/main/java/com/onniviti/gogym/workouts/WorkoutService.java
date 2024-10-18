@@ -117,7 +117,7 @@ public class WorkoutService {
         // Save the WorkoutTemplate to ensure the exercises are properly linked
         workoutRepository.save(workout);
 
-        // Return the newly created WorkoutExerciseTemplate
+        // Create progress for this new exercise in the workout template and return it
         return workoutProgressService.createExerciseProgressForExistingWorkout(savedWorkoutExercise);
     }
 

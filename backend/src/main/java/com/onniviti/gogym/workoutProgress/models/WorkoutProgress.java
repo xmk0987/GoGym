@@ -19,9 +19,6 @@ public class WorkoutProgress {
     @JsonIgnore
     private WorkoutTemplate workout;
 
-    @OneToMany(mappedBy = "workoutProgress", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<WorkoutExerciseProgress> exercises;  // This is correctly named 'exercises'
-
     private boolean completed;
     private LocalDate date;
 
@@ -32,19 +29,9 @@ public class WorkoutProgress {
         this.workout = workout;
         this.completed = completed;
         this.date = date;
-        this.exercises = new ArrayList<>();
     }
 
     public WorkoutProgress() {}
-
-    // Getters and setters
-    public List<WorkoutExerciseProgress> getExercises() {
-        return exercises;
-    }
-
-    public void setExercises(List<WorkoutExerciseProgress> exercises) {
-        this.exercises = exercises;
-    }
 
     public Long getUserId() {
         return userId;

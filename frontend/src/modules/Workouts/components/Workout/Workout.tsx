@@ -61,7 +61,7 @@ const Workout = () => {
           <>
             <WorkoutCard workout={currentWorkout} opened={true} selected />
             <section className={styles["exercises"]}>
-              {currentWorkout.progress.exercises?.map((exerciseWorkout) => (
+              {currentWorkout.exercises?.map((exerciseWorkout) => (
                 <Exercise
                   exerciseWorkout={exerciseWorkout}
                   key={exerciseWorkout.id}

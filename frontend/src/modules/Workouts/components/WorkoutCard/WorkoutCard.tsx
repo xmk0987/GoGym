@@ -44,8 +44,8 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({
         <p>{workout.timeOfWorkout}</p>
         {opened ? null : (
           <p>
-            {workout.progress.exercises?.length > 0
-              ? `${workout.progress.exercises?.length} Exercises`
+            {workout.exercises?.length > 0
+              ? `${workout.exercises?.length} Exercises`
               : "No Exercises"}
           </p>
         )}

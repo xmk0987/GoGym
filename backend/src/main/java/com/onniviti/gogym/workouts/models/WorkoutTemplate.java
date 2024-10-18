@@ -1,7 +1,11 @@
 package com.onniviti.gogym.workouts.models;
 
+import com.onniviti.gogym.workoutProgress.models.WorkoutExerciseProgress;
 import com.onniviti.gogym.workoutProgress.models.WorkoutProgress;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class WorkoutTemplate {
@@ -19,6 +23,9 @@ public class WorkoutTemplate {
 
     @OneToOne(mappedBy ="workout", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private WorkoutProgress progress;
+
+    @OneToMany(mappedBy = "workoutTemplate", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<WorkoutExerciseProgress> exercises;  // This is correctly named 'exercises'
 
     @Enumerated(EnumType.STRING)
     @Column(name = "day_of_workout")  // Maps to "day_of_workout" in the database
@@ -40,9 +47,18 @@ public class WorkoutTemplate {
         this.name = name;
         this.dayOfWorkout = dayOfWorkout;
         this.timeOfWorkout = timeOfWorkout;
+        this.exercises = new ArrayList<>();
     }
 
     // Getters and Setters
+    // Getters and setters
+    public List<WorkoutExerciseProgress> getExercises() {
+        return exercises;
+    }
+
+    public void setExercises(List<WorkoutExerciseProgress> exercises) {
+        this.exercises = exercises;
+    }
 
     public Long getId() {
         return id;
