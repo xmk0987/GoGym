@@ -9,8 +9,6 @@ import WorkoutCard from "../Workouts/components/WorkoutCard/WorkoutCard";
 const Home = () => {
   const workouts = useWorkouts();
 
-  console.log(workouts);
-
   const dateToday = new Date();
   const formattedDate = getFormattedDate(dateToday);
 

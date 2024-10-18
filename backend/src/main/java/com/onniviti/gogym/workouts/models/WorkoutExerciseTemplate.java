@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.onniviti.gogym.exercises.ExerciseTemplate;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 
 @Entity
 public class WorkoutExerciseTemplate {

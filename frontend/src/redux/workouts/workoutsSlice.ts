@@ -109,6 +109,8 @@ const workouts = createSlice({
         state.success = false;
       })
       .addCase(updateWorkout.fulfilled, (state, action) => {
+        console.log("Updated workout payload:", action.payload); // Add this line for debugging
+
         const { id } = action.payload;
         state.loading = false;
         state.success = true;

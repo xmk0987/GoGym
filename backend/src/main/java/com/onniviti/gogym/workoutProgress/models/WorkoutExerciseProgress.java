@@ -5,6 +5,8 @@ import com.onniviti.gogym.workouts.models.WorkoutExerciseTemplate;
 import com.onniviti.gogym.workouts.models.WorkoutTemplate;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 
 @Entity
 public class WorkoutExerciseProgress {
@@ -24,16 +26,18 @@ public class WorkoutExerciseProgress {
     private int setsDone;
     private int repsDone;
     private int weightUsed;
+    private LocalDate date;
 
     // Constructors
     public WorkoutExerciseProgress() {}
 
-    public WorkoutExerciseProgress(WorkoutExerciseTemplate exercise, WorkoutTemplate workoutTemplate, int setsDone, int repsDone, int weightUsed) {
+    public WorkoutExerciseProgress(WorkoutExerciseTemplate exercise, WorkoutTemplate workoutTemplate, int setsDone, int repsDone, int weightUsed, LocalDate date) {
         this.exercise = exercise;
         this.workoutTemplate = workoutTemplate;
         this.setsDone = setsDone;
         this.repsDone = repsDone;
         this.weightUsed = weightUsed;
+        this.date = date;
     }
 
     // Getters and setters
@@ -43,6 +47,14 @@ public class WorkoutExerciseProgress {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public WorkoutExerciseTemplate getExercise() {
