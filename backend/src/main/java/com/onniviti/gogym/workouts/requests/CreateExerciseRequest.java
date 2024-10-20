@@ -1,13 +1,11 @@
 package com.onniviti.gogym.workouts.requests;
 
-public class AddExerciseRequest {
-    private Long exerciseId; // ID of the exercise being added
+public class CreateExerciseRequest {
+    private Long exerciseId; // Reference to ExerciseTemplate
     private int sets;
     private int reps;
     private int weight;
     private boolean isFailure;
-
-    // Getters and Setters
 
     public Long getExerciseId() {
         return exerciseId;

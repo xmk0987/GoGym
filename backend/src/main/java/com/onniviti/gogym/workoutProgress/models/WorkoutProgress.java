@@ -1,44 +1,34 @@
 package com.onniviti.gogym.workoutProgress.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.onniviti.gogym.workouts.models.WorkoutTemplate;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Entity
 public class WorkoutProgress {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "workout_id")
-    @JsonIgnore
-    private WorkoutTemplate workout;
+    @JoinColumn(name = "workout_template_id")
+    private WorkoutTemplate workoutTemplate;
 
-    private boolean completed;
     private LocalDate date;
+    private boolean completed;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @OneToMany(mappedBy = "workoutProgress", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<WorkoutExerciseProgress> exerciseProgressList = new ArrayList<>();
 
-    public WorkoutProgress(WorkoutTemplate workout, boolean completed, LocalDate date) {
-        this.workout = workout;
-        this.completed = completed;
-        this.date = date;
-    }
-
+    // Constructors, Getters, and Setters
     public WorkoutProgress() {}
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public WorkoutProgress(WorkoutTemplate workoutTemplate, LocalDate date) {
+        this.workoutTemplate = workoutTemplate;
+        this.date = date;
     }
 
     public Long getId() {
@@ -49,20 +39,12 @@ public class WorkoutProgress {
         this.id = id;
     }
 
-    public WorkoutTemplate getWorkout() {
-        return workout;
+    public WorkoutTemplate getWorkoutTemplate() {
+        return workoutTemplate;
     }
 
-    public void setWorkout(WorkoutTemplate workout) {
-        this.workout = workout;
-    }
-
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
+    public void setWorkoutTemplate(WorkoutTemplate workoutTemplate) {
+        this.workoutTemplate = workoutTemplate;
     }
 
     public LocalDate getDate() {
@@ -71,5 +53,21 @@ public class WorkoutProgress {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public List<WorkoutExerciseProgress> getExerciseProgressList() {
+        return exerciseProgressList;
+    }
+
+    public void setExerciseProgressList(List<WorkoutExerciseProgress> exerciseProgressList) {
+        this.exerciseProgressList = exerciseProgressList;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

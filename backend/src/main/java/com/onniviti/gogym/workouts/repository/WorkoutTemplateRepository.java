@@ -1,4 +1,4 @@
-package com.onniviti.gogym.workouts;
+package com.onniviti.gogym.workouts.repository;
 
 import com.onniviti.gogym.workouts.models.WorkoutTemplate;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,11 +10,8 @@ import java.time.DayOfWeek;
 import java.util.List;
 
 @Repository
-public interface WorkoutRepository extends JpaRepository<WorkoutTemplate, Long> {
+public interface WorkoutTemplateRepository extends JpaRepository<WorkoutTemplate, Long> {
 
     List<WorkoutTemplate> findByUserId(Long userId);
-
-    @Query("SELECT w FROM WorkoutTemplate w WHERE w.dayOfWorkout = :dayOfWorkout")
-    List<WorkoutTemplate> findByDayOfWorkout(@Param("dayOfWorkout") DayOfWeek dayOfWorkout);
 
 }

@@ -2,45 +2,42 @@ package com.onniviti.gogym.workoutProgress.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.onniviti.gogym.workouts.models.WorkoutExerciseTemplate;
-import com.onniviti.gogym.workouts.models.WorkoutTemplate;
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
-
 
 @Entity
 public class WorkoutExerciseProgress {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "exercise_template_id")
-    private WorkoutExerciseTemplate exercise;  // Renamed to 'exercise' to match usage
+    private WorkoutExerciseTemplate exerciseTemplate;
 
     @ManyToOne
-    @JoinColumn(name = "workout_id")
+    @JoinColumn(name = "workout_progress_id")
     @JsonIgnore
-    private WorkoutTemplate workoutTemplate;
+    private WorkoutProgress workoutProgress;
 
     private int setsDone;
     private int repsDone;
     private int weightUsed;
     private LocalDate date;
 
-    // Constructors
+    // Constructors, Getters, and Setters
     public WorkoutExerciseProgress() {}
 
-    public WorkoutExerciseProgress(WorkoutExerciseTemplate exercise, WorkoutTemplate workoutTemplate, int setsDone, int repsDone, int weightUsed, LocalDate date) {
-        this.exercise = exercise;
-        this.workoutTemplate = workoutTemplate;
+    public WorkoutExerciseProgress(WorkoutExerciseTemplate exerciseTemplate, WorkoutProgress workoutProgress, int setsDone, int repsDone, int weightUsed, LocalDate date) {
+        this.exerciseTemplate = exerciseTemplate;
+        this.workoutProgress = workoutProgress;
         this.setsDone = setsDone;
         this.repsDone = repsDone;
         this.weightUsed = weightUsed;
         this.date = date;
     }
 
-    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -49,28 +46,20 @@ public class WorkoutExerciseProgress {
         this.id = id;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public WorkoutExerciseTemplate getExerciseTemplate() {
+        return exerciseTemplate;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setExerciseTemplate(WorkoutExerciseTemplate exerciseTemplate) {
+        this.exerciseTemplate = exerciseTemplate;
     }
 
-    public WorkoutExerciseTemplate getExercise() {
-        return exercise;
+    public WorkoutProgress getWorkoutProgress() {
+        return workoutProgress;
     }
 
-    public void setExercise(WorkoutExerciseTemplate exercise) {
-        this.exercise = exercise;
-    }
-
-    public WorkoutTemplate getWorkoutTemplate() {
-        return workoutTemplate;
-    }
-
-    public void setWorkoutTemplate(WorkoutTemplate workoutTemplate) {
-        this.workoutTemplate = workoutTemplate;
+    public void setWorkoutProgress(WorkoutProgress workoutProgress) {
+        this.workoutProgress = workoutProgress;
     }
 
     public int getSetsDone() {
@@ -95,5 +84,13 @@ public class WorkoutExerciseProgress {
 
     public void setWeightUsed(int weightUsed) {
         this.weightUsed = weightUsed;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 }

@@ -54,6 +54,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
         // Exclude paths that are allowed without authentication
-        return path.startsWith("/api/auth/login") || path.startsWith("/api/auth/refresh") || path.startsWith("/api/registration/");
+        return path.startsWith("/api/auth/login") || path.startsWith("/api/auth/refresh") || path.startsWith("/api/registration");
     }
 }

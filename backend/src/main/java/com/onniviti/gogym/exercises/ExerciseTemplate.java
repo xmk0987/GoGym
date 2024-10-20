@@ -36,6 +36,9 @@ public class ExerciseTemplate {
         this.instructions = instructions;
     }
 
+    public ExerciseTemplate(Long exerciseId) {
+    }
+
     // Getters and Setters
     public Long getId() {
         return id;

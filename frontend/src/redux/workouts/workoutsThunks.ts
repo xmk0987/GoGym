@@ -1,12 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { handleError } from "../../utils/errors";
 import { setMessage } from "../notification/notificationSlice";
-import {
-  Workout,
-  WorkoutProgressExercise,
-  Workouts,
-} from "../../types/Workouts";
+import { Workout, Workouts } from "../../types/Workouts";
 import { workoutsService } from "../../api/workoutsService";
+import { UpdateWorkoutRequest } from "../../types/Requests";
 
 export const getWorkouts = createAsyncThunk<Workouts, number>(
   "workouts/getWorkouts",
@@ -88,7 +85,35 @@ export const createWorkout = createAsyncThunk<
   }
 );
 
-export const updateWorkout = createAsyncThunk<Workout, Workout>(
+export const deleteWorkout = createAsyncThunk<
+  number,
+  { workoutId: number; userId: number }
+>(
+  "workouts/deleteWorkout",
+  async ({ workoutId, userId }, { dispatch, rejectWithValue }) => {
+    try {
+      await workoutsService.deleteWorkout({
+        workoutId,
+        userId,
+      });
+
+      return workoutId;
+    } catch (error) {
+      const errorMessage = handleError(error);
+
+      dispatch(
+        setMessage({
+          message: errorMessage,
+          error: true,
+        })
+      );
+
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+export const updateWorkout = createAsyncThunk<Workout, UpdateWorkoutRequest>(
   "workouts/updateWorkout",
   async (
     { name, timeOfWorkout, dayOfWorkout, userId, id },
@@ -120,7 +145,7 @@ export const updateWorkout = createAsyncThunk<Workout, Workout>(
 );
 
 export const addExercise = createAsyncThunk<
-  { exercise: WorkoutProgressExercise; workoutId: number },
+  { workout: Workout },
   {
     workoutId: number;
     sets: number;
@@ -128,11 +153,12 @@ export const addExercise = createAsyncThunk<
     isFailure: boolean;
     weight: number;
     exerciseId: number;
+    userId: number;
   }
 >(
   "workouts/addExercise",
   async (
-    { workoutId, sets, reps, isFailure, weight, exerciseId },
+    { workoutId, sets, reps, isFailure, weight, exerciseId, userId },
     { dispatch, rejectWithValue }
   ) => {
     try {
@@ -143,9 +169,10 @@ export const addExercise = createAsyncThunk<
         isFailure,
         weight,
         exerciseId,
+        userId,
       });
 
-      return { exercise: response, workoutId };
+      return { workout: response };
     } catch (error) {
       const errorMessage = handleError(error);
 

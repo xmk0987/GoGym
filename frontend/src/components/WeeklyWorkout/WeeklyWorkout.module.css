@@ -1,0 +1,41 @@
+/* Weekly Workout */
+
+.weeklyWorkout {
+  width: 100%;
+  min-height: 60px;
+  border-radius: var(--radius);
+  background-color: var(--secondary);
+  box-shadow: var(--box-shadow);
+  display: inline-flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.weeklyWorkout div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  flex: 1;
+}
+
+.weeklyWorkout div p {
+  font-size: 10px;
+  text-align: center;
+}
+
+.weeklyWorkout button {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--small-text-font-size);
+}
+
+.active {
+  background-color: var(--accent);
+  color: white;
+}

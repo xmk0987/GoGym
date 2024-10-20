@@ -1,3 +1,4 @@
+import { UpdateWorkoutRequest } from "../types/Requests";
 import { axiosInstance } from "./authService";
 
 export const workoutsService = {
@@ -36,19 +37,11 @@ export const workoutsService = {
     timeOfWorkout,
     dayOfWorkout,
     userId,
-  }: {
-    id: number;
-    name: string;
-    timeOfWorkout: string;
-    dayOfWorkout: string;
-    userId: number;
-  }) => {
-    const response = await axiosInstance.put(`/workouts`, {
-      id,
+  }: UpdateWorkoutRequest) => {
+    const response = await axiosInstance.put(`/workouts/${userId}/${id}`, {
       name,
       timeOfWorkout,
       dayOfWorkout,
-      userId,
     });
     return response.data;
   },
@@ -59,8 +52,10 @@ export const workoutsService = {
     isFailure,
     weight,
     exerciseId,
+    userId,
   }: {
     workoutId: number;
+    userId: number;
     sets: number;
     reps: number | null;
     isFailure: boolean;
@@ -68,7 +63,7 @@ export const workoutsService = {
     exerciseId: number;
   }) => {
     const response = await axiosInstance.post(
-      `/workouts/${workoutId}/exercise`,
+      `/workouts/${userId}/${workoutId}/exercise`,
       {
         sets,
         reps,
@@ -76,6 +71,18 @@ export const workoutsService = {
         weight,
         exerciseId,
       }
+    );
+    return response.data;
+  },
+  deleteWorkout: async ({
+    userId,
+    workoutId,
+  }: {
+    userId: number;
+    workoutId: number;
+  }) => {
+    const response = await axiosInstance.delete(
+      `/workouts/${userId}/${workoutId}`
     );
     return response.data;
   },

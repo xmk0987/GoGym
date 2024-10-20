@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 @Service
 public class ExerciseService {
 
-    private final ExerciseRepository exerciseRepository;
+    private final ExerciseTemplateRepository exerciseRepository;
 
     @Autowired
-    public ExerciseService(ExerciseRepository exerciseRepository) {
+    public ExerciseService(ExerciseTemplateRepository exerciseRepository) {
         this.exerciseRepository = exerciseRepository;
     }
 

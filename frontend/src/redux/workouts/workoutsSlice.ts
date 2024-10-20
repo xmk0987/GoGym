@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   addExercise,
   createWorkout,
+  deleteWorkout,
   getWorkout,
   getWorkouts,
   updateWorkout,
@@ -61,7 +62,7 @@ const workouts = createSlice({
         state.success = false;
       })
       .addCase(getWorkouts.fulfilled, (state, action) => {
-        console.log(action.payload);
+        console.log("get workouts", action.payload);
         state.loading = false;
         state.success = true;
         state.workouts = action.payload;
@@ -96,6 +97,7 @@ const workouts = createSlice({
         state.success = false;
       })
       .addCase(createWorkout.fulfilled, (state, action) => {
+        console.log(action.payload);
         state.loading = false;
         state.success = true;
         state.workouts.push(action.payload);
@@ -104,14 +106,29 @@ const workouts = createSlice({
         state.loading = false;
         state.success = false;
       })
+      .addCase(deleteWorkout.pending, (state) => {
+        state.loading = true;
+        state.success = false;
+      })
+      .addCase(deleteWorkout.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        // Filter out the workout with the given ID and reassign the filtered array
+        state.workouts = state.workouts.filter(
+          (workout) => workout.id !== action.payload
+        );
+      })
+      .addCase(deleteWorkout.rejected, (state) => {
+        state.loading = false;
+        state.success = false;
+      })
       .addCase(updateWorkout.pending, (state) => {
         state.loading = true;
         state.success = false;
       })
       .addCase(updateWorkout.fulfilled, (state, action) => {
-        console.log("Updated workout payload:", action.payload); // Add this line for debugging
-
         const { id } = action.payload;
+        console.log(action.payload);
         state.loading = false;
         state.success = true;
 
@@ -134,19 +151,15 @@ const workouts = createSlice({
         state.success = false;
       })
       .addCase(addExercise.fulfilled, (state, action) => {
-        console.log("In add exercise", action.payload);
-        const { exercise, workoutId } = action.payload;
-        const addedExercise = exercise;
-
-        const workoutIndex = state.workouts.findIndex(
-          (workout) => workout.id === workoutId
+        const { workout } = action.payload;
+        const updatedWorkoutIndex = state.workouts.findIndex(
+          (workout) => workout.id === workout.id
         );
 
-        if (workoutIndex !== -1) {
-          if (!state.workouts[workoutIndex].exercises) {
-            state.workouts[workoutIndex].exercises = []; // Initialize as an empty array
-          }
-          state.workouts[workoutIndex].exercises.push(addedExercise);
+        if (updatedWorkoutIndex !== -1) {
+          state.workouts[updatedWorkoutIndex] = workout;
+        } else {
+          state.workouts.push(workout);
         }
       })
       .addCase(addExercise.rejected, (state) => {

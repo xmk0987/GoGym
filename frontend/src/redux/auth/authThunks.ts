@@ -36,11 +36,9 @@ export const checkAuthStatus = createAsyncThunk<AuthUser | null>(
   async (_, { dispatch, rejectWithValue }) => {
     try {
       const response = await authService.checkAuthStatus();
-      console.log("Check status", response);
       return response;
     } catch (error) {
       const errorMessage = handleError(error);
-
       dispatch(
         setMessage({
           message: errorMessage,

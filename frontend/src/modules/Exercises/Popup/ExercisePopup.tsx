@@ -64,6 +64,7 @@ const ExercisePopup: React.FC<ExercisePopupProps> = ({ close, workoutId }) => {
         isFailure,
         weight,
         exerciseId: exercise.id,
+        userId: user.id
       })
     )
       .unwrap()

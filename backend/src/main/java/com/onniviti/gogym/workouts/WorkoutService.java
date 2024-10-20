@@ -1,14 +1,22 @@
 package com.onniviti.gogym.workouts;
 
-import com.onniviti.gogym.exercises.ExerciseRepository;
 import com.onniviti.gogym.exercises.ExerciseTemplate;
-import com.onniviti.gogym.workoutProgress.WorkoutProgressService;
+import com.onniviti.gogym.exercises.ExerciseTemplateRepository;
 import com.onniviti.gogym.workoutProgress.models.WorkoutExerciseProgress;
 import com.onniviti.gogym.workoutProgress.models.WorkoutProgress;
 import com.onniviti.gogym.workoutProgress.repository.WorkoutExerciseProgressRepository;
 import com.onniviti.gogym.workoutProgress.repository.WorkoutProgressRepository;
 import com.onniviti.gogym.workouts.models.WorkoutExerciseTemplate;
 import com.onniviti.gogym.workouts.models.WorkoutTemplate;
+import com.onniviti.gogym.workouts.repository.WorkoutExerciseRepository;
+import com.onniviti.gogym.workouts.repository.WorkoutTemplateRepository;
+import com.onniviti.gogym.workouts.requests.AddExerciseRequest;
+import com.onniviti.gogym.workouts.requests.CreateWorkoutRequest;
+import com.onniviti.gogym.workouts.requests.UpdateWorkoutRequest;
+import com.onniviti.gogym.workouts.responses.ExerciseDTO;
+import com.onniviti.gogym.workouts.responses.ExerciseProgressDTO;
+import com.onniviti.gogym.workouts.responses.WorkoutDTO;
+import com.onniviti.gogym.workouts.responses.WorkoutProgressDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,112 +25,191 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class WorkoutService {
 
-    private final WorkoutRepository workoutRepository;
-    private final ExerciseRepository exerciseRepository;
-    private final WorkoutExerciseRepository workoutExerciseRepository;
-    private final WorkoutProgressService workoutProgressService;
+    private final WorkoutTemplateRepository workoutTemplateRepository;
     private final WorkoutProgressRepository workoutProgressRepository;
     private final WorkoutExerciseProgressRepository workoutExerciseProgressRepository;
+    private final ExerciseTemplateRepository exerciseTemplateRepository;
+    private final WorkoutExerciseRepository workoutExerciseRepository;
 
     @Autowired
-    public WorkoutService(WorkoutRepository workoutRepository, ExerciseRepository exerciseRepository, WorkoutExerciseRepository workoutExerciseRepository, WorkoutProgressService workoutProgressService, WorkoutProgressRepository workoutProgressRepository, WorkoutExerciseProgressRepository workoutExerciseProgressRepository) {
-        this.workoutRepository = workoutRepository;
-        this.exerciseRepository = exerciseRepository;
-        this.workoutExerciseRepository = workoutExerciseRepository;
-        this.workoutProgressService = workoutProgressService;
+    public WorkoutService(WorkoutTemplateRepository workoutTemplateRepository,
+                          WorkoutProgressRepository workoutProgressRepository, WorkoutExerciseProgressRepository workoutExerciseProgressRepository, ExerciseTemplateRepository exerciseTemplateRepository, WorkoutExerciseRepository workoutExerciseRepository
+    ) {
+        this.workoutTemplateRepository = workoutTemplateRepository;
         this.workoutProgressRepository = workoutProgressRepository;
         this.workoutExerciseProgressRepository = workoutExerciseProgressRepository;
+        this.exerciseTemplateRepository = exerciseTemplateRepository;
+        this.workoutExerciseRepository = workoutExerciseRepository;
     }
 
-    // Method to get exercise progress for a workout based on the workout and date
-    public List<WorkoutExerciseProgress> getExerciseProgressByDate(WorkoutTemplate workout, LocalDate date) {
-        return workoutExerciseProgressRepository.findByWorkoutTemplateAndDate(workout, date);
+    // Controller calls to service:
+    @Transactional
+    public List<WorkoutDTO> getWorkoutsWithProgress(Long userId) {
+        // Fetch all workout templates for the user
+        List<WorkoutTemplate> workoutTemplates = workoutTemplateRepository.findByUserId(userId);
+        List<WorkoutDTO> result = new ArrayList<>();
+
+        for (WorkoutTemplate workoutTemplate : workoutTemplates) {
+            WorkoutDTO workoutDTO = getWorkoutWithDTO(workoutTemplate);
+            result.add(workoutDTO);
+        }
+
+        return result;
     }
 
-    public WorkoutTemplate saveWorkout(WorkoutTemplate workout) {
-        // Save the workout
-        WorkoutTemplate savedWorkout = workoutRepository.save(workout);
+    @Transactional
+    public WorkoutDTO getWorkoutWithProgress(Long userId, Long workoutId) {
+        WorkoutTemplate workoutTemplate = workoutTemplateRepository.findById(workoutId)
+                .orElseThrow(() -> new IllegalArgumentException("Workout not found"));
 
-        LocalDate workoutDate = getWorkoutDate(workout);
-
-        // Create progress for the saved workout
-        WorkoutProgress createdProgress =  workoutProgressService.createWorkoutProgressForDate(savedWorkout, workoutDate);
-        // Set the created progress to the saved workout
-        savedWorkout.setProgress(createdProgress);
-
-        // Return the workout with the progress set
-        return savedWorkout;
+        return getWorkoutWithDTO(workoutTemplate);
     }
 
-    public List<WorkoutTemplate> getWorkouts(Long userId) {
-        List<WorkoutTemplate> workouts = workoutRepository.findByUserId(userId);
+    @Transactional
+    public WorkoutDTO createWorkout(CreateWorkoutRequest request) {
+        // Step 1: Create the WorkoutTemplate
+        WorkoutTemplate workoutTemplate = new WorkoutTemplate();
+        workoutTemplate.setName(request.getName());
+        workoutTemplate.setTimeOfWorkout(request.getTimeOfWorkout());
 
-        for (WorkoutTemplate workout : workouts) {
-            WorkoutProgress progress = workoutProgressRepository.findLatestProgressByWorkout(workout);
+        // Convert the day of the week to uppercase before using Enum.valueOf()
+        workoutTemplate.setDayOfWorkout(request.getDayOfWorkout());
 
-            // Set the latest progress to the workout
-            if (progress != null) {
-                workout.setProgress(progress);
+        workoutTemplate.setUserId(request.getUserId());
 
-                // Fetch the exercise progress matching the progress date
-                List<WorkoutExerciseProgress> exercisesForDate = getExerciseProgressByDate(workout, progress.getDate());
-                workout.setExercises(exercisesForDate);  // Set filtered exercises to the workout
+        // Save the WorkoutTemplate
+        workoutTemplate = workoutTemplateRepository.save(workoutTemplate);
+
+        // Step 3: Create WorkoutProgress for today (or next workout day)
+        LocalDate workoutDate = getNextWorkoutDate(workoutTemplate);
+        WorkoutProgress workoutProgress = new WorkoutProgress(workoutTemplate, workoutDate);
+        workoutProgressRepository.save(workoutProgress);
+
+        // Step 5: Map the result to WorkoutDTO and return
+        return mapToWorkoutDTO(workoutTemplate, workoutProgress, null);
+    }
+
+    @Transactional
+    public WorkoutDTO addExerciseToWorkout(Long userId, Long workoutId, AddExerciseRequest request) {
+        // Step 1: Fetch the WorkoutTemplate by ID
+        WorkoutTemplate workoutTemplate = workoutTemplateRepository.findById(workoutId)
+                .orElseThrow(() -> new IllegalArgumentException("WorkoutTemplate not found"));
+
+        // Fetch the ExerciseTemplate by ID (to avoid the TransientPropertyValueException)
+        ExerciseTemplate exerciseTemplate = exerciseTemplateRepository.findById(request.getExerciseId())
+                .orElseThrow(() -> new IllegalArgumentException("ExerciseTemplate not found"));
+
+        // Step 2: Create and persist the new WorkoutExerciseTemplate
+        WorkoutExerciseTemplate newExercise = new WorkoutExerciseTemplate();
+        newExercise.setWorkoutTemplate(workoutTemplate);
+        newExercise.setExercise(exerciseTemplate); // Associate the fetched exercise template
+        newExercise.setSets(request.getSets());
+        newExercise.setReps(request.getReps());
+        newExercise.setWeight(request.getWeight());
+        newExercise.setFailure(request.isFailure());
+        workoutExerciseRepository.save(newExercise);
+
+        // Persist WorkoutExerciseTemplate first
+        workoutTemplate.getExerciseTemplates().add(newExercise);
+        workoutTemplateRepository.save(workoutTemplate);
+
+        // Step 4: Create or fetch WorkoutProgress for the current workout date
+        LocalDate workoutDate = getNextWorkoutDate(workoutTemplate); // Get the next workout date
+        WorkoutProgress workoutProgress = workoutProgressRepository.findByWorkoutTemplateAndDate(workoutTemplate, workoutDate)
+                .orElseGet(() -> {
+                    WorkoutProgress progress = new WorkoutProgress(workoutTemplate, workoutDate);
+                    workoutProgressRepository.save(progress);
+                    return progress;
+                });
+
+        // Step 5: Create WorkoutExerciseProgress for the new exercise
+        WorkoutExerciseProgress newExerciseProgress = new WorkoutExerciseProgress(newExercise, workoutProgress, 0, 0, request.getWeight(), workoutDate);
+        // Persist WorkoutExerciseProgress after WorkoutExerciseTemplate has been saved
+        workoutExerciseProgressRepository.save(newExerciseProgress);
+
+        List<ExerciseDTO> exercises = new ArrayList<>();
+        for (WorkoutExerciseTemplate workoutExerciseTemplate : workoutTemplate.getExerciseTemplates()) {
+            // Check if the exercise has progress for the current workout date
+            WorkoutExerciseProgress exerciseProgress = workoutExerciseProgressRepository
+                    .findByWorkoutTemplateAndDate(workoutExerciseTemplate.getWorkoutTemplate(), workoutDate)
+                    .stream().findFirst().orElse(null);
+
+            ExerciseProgressDTO exerciseProgressDTO = exerciseProgress != null ?
+                    new ExerciseProgressDTO(exerciseProgress.getSetsDone(), exerciseProgress.getRepsDone(), exerciseProgress.getWeightUsed(), exerciseProgress.getDate())
+                    : null;
+
+            // Map to ExerciseDTO
+            exercises.add(new ExerciseDTO(
+                    workoutExerciseTemplate.getId(),
+                    workoutExerciseTemplate.getExercise(),
+                    workoutExerciseTemplate.getSets(),
+                    workoutExerciseTemplate.getReps(),
+                    workoutExerciseTemplate.getWeight(),
+                    workoutExerciseTemplate.isFailure(),
+                    exerciseProgressDTO
+            ));
+        }
+
+        // Step 6: Return the updated workout with progress
+        return mapToWorkoutDTO(workoutTemplate, workoutProgress, exercises);
+    }
+    
+
+    // Private functions:
+
+    private WorkoutDTO getWorkoutWithDTO(WorkoutTemplate workoutTemplate) {
+        // Fetch the workout progress
+        WorkoutProgress workoutProgress = workoutProgressRepository.findByWorkoutTemplate(workoutTemplate).stream().findFirst().orElse(null);
+        WorkoutProgressDTO progressDTO = workoutProgress != null ?
+                new WorkoutProgressDTO(workoutProgress.getDate(), workoutProgress.isCompleted()) : null;
+
+        // Fetch and map each exercise template and progress
+        List<ExerciseDTO> exercises = new ArrayList<>();
+        if (workoutProgress != null) {
+            for (WorkoutExerciseTemplate exerciseTemplate : workoutTemplate.getExerciseTemplates()) {
+                // Fetch progress for the exercise
+                WorkoutExerciseProgress exerciseProgress = workoutExerciseProgressRepository
+                        .findByWorkoutTemplateAndDate(exerciseTemplate.getWorkoutTemplate(), workoutProgress.getDate())
+                        .stream().findFirst().orElse(null);
+
+                ExerciseProgressDTO exerciseProgressDTO = exerciseProgress != null ?
+                        new ExerciseProgressDTO(exerciseProgress.getSetsDone(), exerciseProgress.getRepsDone(), exerciseProgress.getWeightUsed(), exerciseProgress.getDate()) : null;
+
+                // Map to ExerciseDTO
+                exercises.add(new ExerciseDTO(
+                        exerciseTemplate.getId(),
+                        exerciseTemplate.getExercise(),
+                        exerciseTemplate.getSets(),
+                        exerciseTemplate.getReps(),
+                        exerciseTemplate.getWeight(),
+                        exerciseTemplate.isFailure(),
+                        exerciseProgressDTO
+                ));
             }
         }
 
-        return workouts;
+        // Return the single WorkoutDTO
+        return new WorkoutDTO(
+                workoutTemplate.getId(),
+                workoutTemplate.getUserId(),
+                workoutTemplate.getName(),
+                workoutTemplate.getDayOfWorkout().name(),
+                workoutTemplate.getTimeOfWorkout(),
+                exercises,
+                progressDTO
+        );
     }
 
 
-
-    public WorkoutTemplate updateWorkout(Long id, WorkoutTemplate updatedWorkout) {
-        WorkoutTemplate existingWorkout = workoutRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Workout not found"));
-
-        existingWorkout.setName(updatedWorkout.getName());
-        existingWorkout.setDayOfWorkout(updatedWorkout.getDayOfWorkout());
-        existingWorkout.setTimeOfWorkout(updatedWorkout.getTimeOfWorkout());
-
-        WorkoutTemplate savedWorkout = workoutRepository.save(existingWorkout);
-
-        LocalDate workoutDate = getWorkoutDate(savedWorkout);
-
-        // Create a new progress for the updated workout if it doesn't exist
-        WorkoutProgress createdProgress = workoutProgressService.createWorkoutProgressForDate(savedWorkout, workoutDate);
-        savedWorkout.setProgress(createdProgress);
-
-        // Get existing exercises only for the specific date
-        List<WorkoutExerciseProgress> existingExercisesForDate = workoutExerciseProgressRepository
-                .findByWorkoutTemplateAndDate(savedWorkout, workoutDate);
-
-        // Temporary list to store new or updated exercise progress
-        List<WorkoutExerciseProgress> newExerciseProgresses = new ArrayList<>();
-
-        // Update or create exercise progress for the workout for the specific date
-        for (WorkoutExerciseProgress exercise : new ArrayList<>(existingExercisesForDate)) {
-            WorkoutExerciseProgress progress = workoutProgressService.updateOrCreateExerciseProgress(savedWorkout, exercise.getExercise(), workoutDate);
-            if (progress != null) {
-                newExerciseProgresses.add(progress);  // Collect new progress
-            }
-        }
-
-        // Replace the exercises in the workout with the ones for the specific date
-        savedWorkout.setExercises(newExerciseProgresses);
-
-        return savedWorkout;
-    }
-
-
-    private LocalDate getWorkoutDate(WorkoutTemplate workout) {
+    private LocalDate getNextWorkoutDate(WorkoutTemplate workoutTemplate) {
         LocalDate today = LocalDate.now();
         DayOfWeek todayDayOfWeek = today.getDayOfWeek();
-        DayOfWeek workoutDayOfWeek = DayOfWeek.valueOf(workout.getDayOfWorkout().toString().toUpperCase());
+        DayOfWeek workoutDayOfWeek = DayOfWeek.valueOf(workoutTemplate.getDayOfWorkout().toString().toUpperCase());
 
         // Calculate the number of days until the workout
         int daysUntilWorkout = (workoutDayOfWeek.getValue() - todayDayOfWeek.getValue() + 7) % 7;
@@ -130,54 +217,19 @@ public class WorkoutService {
         return today.plusDays(daysUntilWorkout);
     }
 
-    @Transactional
-    public WorkoutExerciseProgress addExerciseToWorkout(Long workoutId, Long exerciseId, int sets, int reps, int weight, boolean isFailure) {
-        // Fetch the workout and exercise or throw an exception if not found
-        WorkoutTemplate workout = workoutRepository.findById(workoutId)
-                .orElseThrow(() -> new IllegalArgumentException("Workout not found"));
-        ExerciseTemplate exercise = exerciseRepository.findById(exerciseId)
-                .orElseThrow(() -> new IllegalArgumentException("Exercise not found"));
+    private WorkoutDTO mapToWorkoutDTO(WorkoutTemplate workoutTemplate, WorkoutProgress workoutProgress,  List<ExerciseDTO> exercises) {
+        WorkoutProgressDTO progressDTO = new WorkoutProgressDTO(workoutProgress.getDate(), workoutProgress.isCompleted());
 
-        // If the workout day is today, set the workoutDate to today
-        LocalDate workoutDate = getWorkoutDate(workout);
-
-        // Create and save the new WorkoutExerciseTemplate
-        WorkoutExerciseTemplate workoutExerciseTemplate = new WorkoutExerciseTemplate(workout, exercise, sets, reps, weight, isFailure);
-        WorkoutExerciseTemplate savedWorkoutExercise = workoutExerciseRepository.save(workoutExerciseTemplate);
-
-        // Save the WorkoutTemplate to ensure the exercises are properly linked
-        workoutRepository.save(workout);
-
-        // Create progress for this new exercise in the workout template and return it
-        return workoutProgressService.updateOrCreateExerciseProgress(workout, savedWorkoutExercise, workoutDate);
+        return new WorkoutDTO(
+                workoutTemplate.getId(),
+                workoutTemplate.getUserId(),
+                workoutTemplate.getName(),
+                workoutTemplate.getDayOfWorkout().name(),
+                workoutTemplate.getTimeOfWorkout(),
+                exercises,
+                progressDTO
+        );
     }
-
-
-
-    public WorkoutTemplate getWorkout(Long userId, Long workoutId) {
-        WorkoutTemplate workout = workoutRepository.findById(workoutId)
-                .orElseThrow(() -> new IllegalArgumentException("Workout not found"));
-
-        if (!Objects.equals(workout.getUserId(), userId)) {
-            throw new IllegalStateException("Not your workout");
-        }
-
-        WorkoutProgress progress = workoutProgressRepository.findLatestProgressByWorkout(workout);
-        if (progress != null) {
-            workout.setProgress(progress);
-
-            // Fetch the exercise progress matching the progress date
-            List<WorkoutExerciseProgress> exercisesForDate = getExerciseProgressByDate(workout, progress.getDate());
-            workout.setExercises(exercisesForDate);  // Set filtered exercises to the workout
-
-            System.out.println("Progress found and set: " + progress.getDate());
-        } else {
-            System.out.println("No progress found for workout: " + workout.getId());
-        }
-
-        return workout;
-    }
-
 
 
 }

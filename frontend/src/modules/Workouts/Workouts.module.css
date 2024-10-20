@@ -46,3 +46,21 @@
   right: 50%;
   transform: translateX(50%);
 }
+
+.editWorkouts {
+  display: inline-flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.deleteWorkout {
+  width: 25px;
+  height: 25px;
+  background-color: red;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  box-shadow: var(--box-shadow);
+}

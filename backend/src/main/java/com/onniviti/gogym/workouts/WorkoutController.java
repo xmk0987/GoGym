@@ -1,12 +1,11 @@
 package com.onniviti.gogym.workouts;
 
-import com.onniviti.gogym.workoutProgress.models.WorkoutExerciseProgress;
-import com.onniviti.gogym.workouts.models.WorkoutExerciseTemplate;
 import com.onniviti.gogym.workouts.models.WorkoutTemplate;
 import com.onniviti.gogym.workouts.requests.AddExerciseRequest;
-import org.hibernate.jdbc.Work;
+import com.onniviti.gogym.workouts.requests.CreateWorkoutRequest;
+import com.onniviti.gogym.workouts.requests.UpdateWorkoutRequest;
+import com.onniviti.gogym.workouts.responses.WorkoutDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,39 +23,36 @@ public class WorkoutController {
 
 
     @PostMapping()
-    public WorkoutTemplate createWorkout(@RequestBody WorkoutTemplate workout) {
-        return workoutService.saveWorkout(workout);
+    public WorkoutDTO createWorkout(@RequestBody CreateWorkoutRequest workout) {
+        return workoutService.createWorkout(workout);
     }
 
     @GetMapping("/{userId}")
-    public List<WorkoutTemplate> getWorkouts(@PathVariable Long userId) {
-        System.out.println("Got to workout controleler");
-        return workoutService.getWorkouts(userId);
+    public List<WorkoutDTO> getWorkouts(@PathVariable Long userId) {
+        return workoutService.getWorkoutsWithProgress(userId);
     }
 
     @GetMapping("/{userId}/{workoutId}")
-    public WorkoutTemplate getWorkout(@PathVariable Long userId, @PathVariable Long workoutId) {
-        return workoutService.getWorkout(userId , workoutId);
+    public WorkoutDTO getWorkout(@PathVariable Long userId, @PathVariable Long workoutId) {
+        return workoutService.getWorkoutWithProgress(userId, workoutId);
     }
 
-    @PutMapping()
-    public WorkoutTemplate updateWorkout(@RequestBody WorkoutTemplate workout) {
-        return workoutService.updateWorkout(workout.getId(), workout);
+    @PutMapping("/{userId}/{workoutId}")
+    public String updateWorkout(@PathVariable Long userId, @PathVariable Long workoutId, @RequestBody UpdateWorkoutRequest workout) {
+        return "Need to implement";
     }
 
-    @PostMapping("/{workoutId}/exercise")
-    public ResponseEntity<WorkoutExerciseProgress> addExerciseToWorkout(
+    @DeleteMapping("/{userId}/{workoutId}")
+    public void deleteWorkout(@PathVariable Long userId, @PathVariable Long workoutId) {
+        return ;
+    }
+
+    @PostMapping("/{userId}/{workoutId}/exercise")
+    public WorkoutDTO addExerciseToWorkout(
             @PathVariable Long workoutId,
+            @PathVariable Long userId,
             @RequestBody AddExerciseRequest addExerciseRequest
     ) {
-        WorkoutExerciseProgress updatedWorkout = workoutService.addExerciseToWorkout(
-                workoutId,
-                addExerciseRequest.getExerciseId(),
-                addExerciseRequest.getSets(),
-                addExerciseRequest.getReps(),
-                addExerciseRequest.getWeight(),
-                addExerciseRequest.getIsFailure()
-        );
-        return ResponseEntity.ok(updatedWorkout);
+        return workoutService.addExerciseToWorkout(userId, workoutId, addExerciseRequest);
     }
 }

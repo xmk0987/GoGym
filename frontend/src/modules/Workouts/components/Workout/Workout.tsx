@@ -12,6 +12,8 @@ import { handleEditWorkout } from "../../../../redux/workouts/workoutsSlice";
 import Exercise from "../../../Exercises/Exercise/Exercise";
 import ExercisePopup from "../../../Exercises/Popup/ExercisePopup";
 import { getWorkout } from "../../../../redux/workouts/workoutsThunks";
+import EditIcon from "../../../../assets/icons/EditIcon";
+import EditOffIcon from "../../../../assets/icons/EditOffIcon";
 
 const Workout = () => {
   const { workoutId } = useParams<{ workoutId: string }>();
@@ -22,6 +24,11 @@ const Workout = () => {
   const user = useSelector((state: RootState) => state.auth.user);
 
   const [addExercise, setAddExercise] = useState<boolean>(false);
+  const [edit, setEdit] = useState<boolean>(false);
+
+  const handleToggleEdit = () => {
+    setEdit(!edit);
+  };
 
   const parsedWorkoutId = workoutId ? parseInt(workoutId) : null;
 
@@ -60,6 +67,12 @@ const Workout = () => {
         {currentWorkout ? (
           <>
             <WorkoutCard workout={currentWorkout} opened={true} selected />
+            <div className={styles["workoutHeader"]}>
+              <h1>Exercises</h1>
+              <button onClick={handleToggleEdit}>
+                {edit ? <EditOffIcon size="20px" /> : <EditIcon size="20px" />}
+              </button>
+            </div>
             <section className={styles["exercises"]}>
               {currentWorkout.exercises?.map((exerciseWorkout) => (
                 <Exercise
