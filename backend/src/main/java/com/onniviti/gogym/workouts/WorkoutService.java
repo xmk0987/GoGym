@@ -153,7 +153,7 @@ public class WorkoutService {
     // Private functions:
 
     private WorkoutDTO getWorkoutWithDTO(WorkoutTemplate workoutTemplate) {
-        // Fetch the workout progress
+        // Fetch the workout progress (create or fetch by date)
         WorkoutProgress workoutProgress = createOrFetchWorkoutProgressByDate(workoutTemplate);
 
         WorkoutProgressDTO progressDTO = workoutProgress != null ?
@@ -163,19 +163,23 @@ public class WorkoutService {
         List<ExerciseDTO> exercises = new ArrayList<>();
         if (workoutProgress != null) {
             for (WorkoutExerciseTemplate exerciseTemplate : workoutTemplate.getExerciseTemplates()) {
-                // Fetch progress for the exercise
-                WorkoutExerciseProgress exerciseProgress = workoutExerciseProgressRepository
-                        .findByWorkoutTemplateAndDate(exerciseTemplate.getWorkoutTemplate(), workoutProgress.getDate())
-                        .stream().findFirst().orElse(null);
+                // Fetch all existing progress for the current exercise template and date
+                List<WorkoutExerciseProgress> exerciseProgressList = workoutExerciseProgressRepository
+                        .findByWorkoutTemplateAndDate(exerciseTemplate.getWorkoutTemplate(), workoutProgress.getDate());
 
-                // If exercise progress does not exist, create and save it
+                // Check if a specific progress entry exists for this exercise template
+                WorkoutExerciseProgress exerciseProgress = exerciseProgressList.stream()
+                        .filter(progress -> progress.getExerciseTemplate().equals(exerciseTemplate))
+                        .findFirst().orElse(null);
+
+                // If no progress entry exists for this exercise, create and save it
                 if (exerciseProgress == null) {
                     exerciseProgress = new WorkoutExerciseProgress(
                             exerciseTemplate,           // The exercise template
-                            workoutProgress,            // The workout progress (this links the exercise progress to the workout)
-                            0,                          // Default setsDone (if needed)
-                            0,                          // Default repsDone (if needed)
-                            exerciseTemplate.getWeight(),// Default weight used (or set some other value)
+                            workoutProgress,            // The workout progress
+                            0,                          // Default setsDone
+                            0,                          // Default repsDone
+                            exerciseTemplate.getWeight(),// Default weight used
                             workoutProgress.getDate()    // The date for this progress
                     );
                     // Save the new exercise progress to the database
