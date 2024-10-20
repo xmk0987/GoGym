@@ -129,6 +129,7 @@ const workouts = createSlice({
       .addCase(updateWorkout.fulfilled, (state, action) => {
         const { id } = action.payload;
         console.log(action.payload);
+        console.log("update workout");
         state.loading = false;
         state.success = true;
 

@@ -38,8 +38,8 @@ public class WorkoutController {
     }
 
     @PutMapping("/{userId}/{workoutId}")
-    public String updateWorkout(@PathVariable Long userId, @PathVariable Long workoutId, @RequestBody UpdateWorkoutRequest workout) {
-        return "Need to implement";
+    public WorkoutDTO updateWorkout(@PathVariable Long userId, @PathVariable Long workoutId, @RequestBody UpdateWorkoutRequest request) {
+        return workoutService.updateWorkout(userId, workoutId, request );
     }
 
     @DeleteMapping("/{userId}/{workoutId}")
