@@ -6,6 +6,7 @@ import com.onniviti.gogym.workouts.requests.CreateWorkoutRequest;
 import com.onniviti.gogym.workouts.requests.UpdateWorkoutRequest;
 import com.onniviti.gogym.workouts.responses.WorkoutDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,9 +44,11 @@ public class WorkoutController {
     }
 
     @DeleteMapping("/{userId}/{workoutId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteWorkout(@PathVariable Long userId, @PathVariable Long workoutId) {
-        return ;
+        workoutService.deleteWorkout(userId, workoutId);
     }
+
 
     @PostMapping("/{userId}/{workoutId}/exercise")
     public WorkoutDTO addExerciseToWorkout(

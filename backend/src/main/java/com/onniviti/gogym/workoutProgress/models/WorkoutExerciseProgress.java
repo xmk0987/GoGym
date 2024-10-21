@@ -21,6 +21,9 @@ public class WorkoutExerciseProgress {
     @JsonIgnore
     private WorkoutProgress workoutProgress;
 
+    @Column(name = "user_id")
+    private Long userId;
+
     private int setsDone;
     private int repsDone;
     private int weightUsed;
@@ -29,9 +32,10 @@ public class WorkoutExerciseProgress {
     // Constructors, Getters, and Setters
     public WorkoutExerciseProgress() {}
 
-    public WorkoutExerciseProgress(WorkoutExerciseTemplate exerciseTemplate, WorkoutProgress workoutProgress, int setsDone, int repsDone, int weightUsed, LocalDate date) {
+    public WorkoutExerciseProgress(WorkoutExerciseTemplate exerciseTemplate, WorkoutProgress workoutProgress, Long userId, int setsDone, int repsDone, int weightUsed, LocalDate date) {
         this.exerciseTemplate = exerciseTemplate;
         this.workoutProgress = workoutProgress;
+        this.userId = userId;
         this.setsDone = setsDone;
         this.repsDone = repsDone;
         this.weightUsed = weightUsed;
@@ -92,5 +96,13 @@ public class WorkoutExerciseProgress {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

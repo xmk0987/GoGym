@@ -13,6 +13,9 @@ public class WorkoutProgress {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "user_id")
+    private Long userId;
+
     @ManyToOne
     @JoinColumn(name = "workout_template_id")
     private WorkoutTemplate workoutTemplate;
@@ -26,9 +29,18 @@ public class WorkoutProgress {
     // Constructors, Getters, and Setters
     public WorkoutProgress() {}
 
-    public WorkoutProgress(WorkoutTemplate workoutTemplate, LocalDate date) {
+    public WorkoutProgress(Long userId, WorkoutTemplate workoutTemplate, LocalDate date) {
+        this.userId = userId;
         this.workoutTemplate = workoutTemplate;
         this.date = date;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Long getId() {

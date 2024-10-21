@@ -91,25 +91,21 @@ public class WorkoutService {
 
     @Transactional
     public WorkoutDTO addExerciseToWorkout(Long userId, Long workoutId, AddExerciseRequest request) {
-        // Step 1: Fetch the WorkoutTemplate by ID
         WorkoutTemplate workoutTemplate = workoutTemplateRepository.findById(workoutId)
                 .orElseThrow(() -> new IllegalArgumentException("WorkoutTemplate not found"));
 
-        // Fetch the ExerciseTemplate by ID (to avoid the TransientPropertyValueException)
         ExerciseTemplate exerciseTemplate = exerciseTemplateRepository.findById(request.getExerciseId())
                 .orElseThrow(() -> new IllegalArgumentException("ExerciseTemplate not found"));
 
-        // Step 2: Create and persist the new WorkoutExerciseTemplate
         WorkoutExerciseTemplate newExercise = new WorkoutExerciseTemplate();
         newExercise.setWorkoutTemplate(workoutTemplate);
-        newExercise.setExercise(exerciseTemplate); // Associate the fetched exercise template
+        newExercise.setExercise(exerciseTemplate);
         newExercise.setSets(request.getSets());
         newExercise.setReps(request.getReps());
         newExercise.setWeight(request.getWeight());
         newExercise.setFailure(request.isFailure());
         workoutExerciseRepository.save(newExercise);
 
-        // Persist WorkoutExerciseTemplate first
         workoutTemplate.getExerciseTemplates().add(newExercise);
         workoutTemplateRepository.save(workoutTemplate);
 
@@ -125,12 +121,7 @@ public class WorkoutService {
         // Check if the DayOfWorkout has changed
         WorkoutTemplate.DayOfWorkout oldDayOfWorkout = workoutTemplate.getDayOfWorkout();
         if (request.getDayOfWorkout() != null && !oldDayOfWorkout.equals(request.getDayOfWorkout())) {
-            // If the day has changed, update it and handle any additional logic here
             workoutTemplate.setDayOfWorkout(request.getDayOfWorkout());
-
-            // Example: You might want to create a new progress for the new day
-            // or handle specific logic when the day is changed
-            System.out.println("Day of workout has been changed from " + oldDayOfWorkout + " to " + request.getDayOfWorkout());
         }
 
         // Update the name if it's provided and different
@@ -150,6 +141,29 @@ public class WorkoutService {
         return getWorkoutWithDTO(workoutTemplate);
     }
 
+    @Transactional
+    public void deleteWorkout(Long userId, Long workoutId) {
+        // Step 1: Fetch all workout progress entries related to the workout template
+        List<WorkoutProgress> workoutProgressList = workoutProgressRepository.findByWorkoutTemplateId(workoutId);
+
+        // Step 2: For each workout progress, delete all related workout exercise progress entries
+        for (WorkoutProgress workoutProgress : workoutProgressList) {
+            workoutExerciseProgressRepository.deleteByWorkoutProgressId(workoutProgress.getId());
+        }
+
+        // Step 3: Delete the workout progress entries associated with the workout template
+        workoutProgressRepository.deleteByWorkoutTemplateId(workoutId);
+
+        // Step 4: Delete all workout exercises (if necessary)
+        workoutExerciseRepository.deleteByWorkoutTemplateId(workoutId);
+
+        // Step 5: Finally, delete the workout template itself
+        workoutTemplateRepository.deleteById(workoutId);
+    }
+
+
+
+
     // Private functions:
 
     private WorkoutDTO getWorkoutWithDTO(WorkoutTemplate workoutTemplate) {
@@ -168,30 +182,31 @@ public class WorkoutService {
                         .findByWorkoutTemplateAndDate(exerciseTemplate.getWorkoutTemplate(), workoutProgress.getDate());
 
                 // Check if a specific progress entry exists for this exercise template
-                WorkoutExerciseProgress exerciseProgress = exerciseProgressList.stream()
+                WorkoutExerciseProgress workoutExerciseProgress = exerciseProgressList.stream()
                         .filter(progress -> progress.getExerciseTemplate().equals(exerciseTemplate))
                         .findFirst().orElse(null);
 
                 // If no progress entry exists for this exercise, create and save it
-                if (exerciseProgress == null) {
-                    exerciseProgress = new WorkoutExerciseProgress(
-                            exerciseTemplate,           // The exercise template
-                            workoutProgress,            // The workout progress
-                            0,                          // Default setsDone
-                            0,                          // Default repsDone
-                            exerciseTemplate.getWeight(),// Default weight used
-                            workoutProgress.getDate()    // The date for this progress
+                if (workoutExerciseProgress == null) {
+                    workoutExerciseProgress = new WorkoutExerciseProgress(
+                            exerciseTemplate,
+                            workoutProgress,
+                            workoutTemplate.getUserId(),
+                            0,
+                            0,
+                            exerciseTemplate.getWeight(),
+                            workoutProgress.getDate()
                     );
                     // Save the new exercise progress to the database
-                    exerciseProgress = workoutExerciseProgressRepository.save(exerciseProgress);
+                    workoutExerciseProgress = workoutExerciseProgressRepository.save(workoutExerciseProgress);
                 }
 
                 // Map the saved or existing progress to ExerciseProgressDTO
                 ExerciseProgressDTO exerciseProgressDTO = new ExerciseProgressDTO(
-                        exerciseProgress.getSetsDone(),
-                        exerciseProgress.getRepsDone(),
-                        exerciseProgress.getWeightUsed(),
-                        exerciseProgress.getDate()
+                        workoutExerciseProgress.getSetsDone(),
+                        workoutExerciseProgress.getRepsDone(),
+                        workoutExerciseProgress.getWeightUsed(),
+                        workoutExerciseProgress.getDate()
                 );
 
                 // Map to ExerciseDTO
@@ -236,7 +251,7 @@ public class WorkoutService {
         LocalDate workoutDate = getNextWorkoutDate(workoutTemplate); // Get the next workout date
         return workoutProgressRepository.findByWorkoutTemplateAndDate(workoutTemplate, workoutDate)
                 .orElseGet(() -> {
-                    WorkoutProgress progress = new WorkoutProgress(workoutTemplate, workoutDate);
+                    WorkoutProgress progress = new WorkoutProgress(workoutTemplate.getUserId(), workoutTemplate, workoutDate);
                     workoutProgressRepository.save(progress);
                     return progress;
                 });
