@@ -1,6 +1,5 @@
 package com.onniviti.gogym.workouts;
 
-import com.onniviti.gogym.workouts.models.WorkoutTemplate;
 import com.onniviti.gogym.workouts.requests.AddExerciseRequest;
 import com.onniviti.gogym.workouts.requests.CreateWorkoutRequest;
 import com.onniviti.gogym.workouts.requests.UpdateWorkoutRequest;
