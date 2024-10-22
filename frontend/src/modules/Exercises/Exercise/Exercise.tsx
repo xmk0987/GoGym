@@ -1,11 +1,22 @@
 import { ExerciseWorkout } from "../../../types/Workouts";
 import styles from "./Exercise.module.css";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../../store";
+import { changeSetsProgress } from "../../../redux/workouts/workoutsThunks";
 
 interface ExerciseProps {
   exerciseWorkout: ExerciseWorkout;
 }
 
 const Exercise: React.FC<ExerciseProps> = ({ exerciseWorkout }) => {
+  const dispatch: AppDispatch = useDispatch();
+
+  const updateProgress = (increase: boolean) => {
+    dispatch(
+      changeSetsProgress({ exerciseId: exerciseWorkout.progress.id, increase })
+    );
+  };
+
   return (
     <div className={styles["container"]}>
       <span></span>
@@ -15,7 +26,7 @@ const Exercise: React.FC<ExerciseProps> = ({ exerciseWorkout }) => {
         </p>
         <p>
           {`${exerciseWorkout.sets} x ${
-            exerciseWorkout.failure ? "Failure" : exerciseWorkout.reps
+            exerciseWorkout.failure ? "Failure" : exerciseWorkout.sets
           } x ${exerciseWorkout.weight} kg`}{" "}
         </p>
       </div>
@@ -23,7 +34,23 @@ const Exercise: React.FC<ExerciseProps> = ({ exerciseWorkout }) => {
         <p>
           <strong>Sets Done:</strong>
         </p>
-        <p>{`${exerciseWorkout.progress?.setsDone} / ${exerciseWorkout.sets}`}</p>
+        <div className={styles["setProgress"]}>
+          <button
+            disabled={exerciseWorkout.progress.setsDone === 0}
+            onClick={() => updateProgress(false)}
+          >
+            -
+          </button>
+          <p>{`${exerciseWorkout.progress?.setsDone} / ${exerciseWorkout.sets}`}</p>
+          <button
+            disabled={
+              exerciseWorkout.progress.setsDone === exerciseWorkout.sets
+            }
+            onClick={() => updateProgress(true)}
+          >
+            +
+          </button>
+        </div>
       </div>
     </div>
   );

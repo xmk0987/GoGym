@@ -185,3 +185,34 @@ export const addExercise = createAsyncThunk<
     }
   }
 );
+
+export const changeSetsProgress = createAsyncThunk<
+  { exerciseId: number; increase: boolean },
+  {
+    exerciseId: number;
+    increase: boolean;
+  }
+>(
+  "workouts/changeSetsProgress",
+  async ({ exerciseId, increase }, { dispatch, rejectWithValue }) => {
+    try {
+      await workoutsService.changeSetsProgress({
+        exerciseId,
+        increase,
+      });
+
+      return { exerciseId, increase };
+    } catch (error) {
+      const errorMessage = handleError(error);
+
+      dispatch(
+        setMessage({
+          message: errorMessage,
+          error: true,
+        })
+      );
+
+      return rejectWithValue(errorMessage);
+    }
+  }
+);

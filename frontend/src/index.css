@@ -123,3 +123,12 @@ input::placeholder {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+button:disabled {
+  background-color: grey;
+  box-shadow: none;
+}
+
+button:disabled:hover {
+  cursor: default;
+}

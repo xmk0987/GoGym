@@ -83,4 +83,16 @@ export const workoutsService = {
     );
     return response.data;
   },
+  changeSetsProgress: async ({
+    exerciseId,
+    increase,
+  }: {
+    exerciseId: number;
+    increase: boolean;
+  }) => {
+    const response = await axiosInstance.put(
+      `/workouts/progress/${exerciseId}/${increase}`
+    );
+    return response.data;
+  },
 };

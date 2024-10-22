@@ -25,19 +25,17 @@ public class WorkoutExerciseProgress {
     private Long userId;
 
     private int setsDone;
-    private int repsDone;
     private int weightUsed;
     private LocalDate date;
 
     // Constructors, Getters, and Setters
     public WorkoutExerciseProgress() {}
 
-    public WorkoutExerciseProgress(WorkoutExerciseTemplate exerciseTemplate, WorkoutProgress workoutProgress, Long userId, int setsDone, int repsDone, int weightUsed, LocalDate date) {
+    public WorkoutExerciseProgress(WorkoutExerciseTemplate exerciseTemplate, WorkoutProgress workoutProgress, Long userId, int setsDone, int weightUsed, LocalDate date) {
         this.exerciseTemplate = exerciseTemplate;
         this.workoutProgress = workoutProgress;
         this.userId = userId;
         this.setsDone = setsDone;
-        this.repsDone = repsDone;
         this.weightUsed = weightUsed;
         this.date = date;
     }
@@ -74,13 +72,6 @@ public class WorkoutExerciseProgress {
         this.setsDone = setsDone;
     }
 
-    public int getRepsDone() {
-        return repsDone;
-    }
-
-    public void setRepsDone(int repsDone) {
-        this.repsDone = repsDone;
-    }
 
     public int getWeightUsed() {
         return weightUsed;

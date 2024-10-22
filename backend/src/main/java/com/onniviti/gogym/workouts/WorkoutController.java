@@ -57,4 +57,11 @@ public class WorkoutController {
     ) {
         return workoutService.addExerciseToWorkout(userId, workoutId, addExerciseRequest);
     }
+
+
+    @PutMapping("/progress/{exerciseId}/{increase}")
+    public void updateExerciseProgressSets(@PathVariable Long exerciseId,@PathVariable String increase) {
+        workoutService.updateExerciseProgressSets(exerciseId, increase);
+    }
+
 }

@@ -160,7 +160,25 @@ public class WorkoutService {
         workoutTemplateRepository.deleteById(workoutId);
     }
 
+    @Transactional
+    public void updateExerciseProgressSets(Long exerciseProgressId, String increase) {
+        boolean increaseBool = Boolean.parseBoolean(increase);
 
+        // Fetch the exercise progress by ID
+        WorkoutExerciseProgress exerciseProgress = workoutExerciseProgressRepository
+                .findById(exerciseProgressId)
+                .orElseThrow(() -> new IllegalArgumentException("Exercise progress not found"));
+
+        // Update the sets based on the increase flag
+        int currentSets = exerciseProgress.getSetsDone();
+        if (increaseBool) {
+            exerciseProgress.setSetsDone(currentSets + 1);
+        } else {
+            exerciseProgress.setSetsDone(Math.max(0, currentSets - 1));
+        }
+
+        workoutExerciseProgressRepository.save(exerciseProgress);
+    }
 
 
     // Private functions:
@@ -192,7 +210,6 @@ public class WorkoutService {
                             workoutProgress,
                             workoutTemplate.getUserId(),
                             0,
-                            0,
                             exerciseTemplate.getWeight(),
                             workoutProgress.getDate()
                     );
@@ -203,9 +220,9 @@ public class WorkoutService {
                 // Map the saved or existing progress to ExerciseProgressDTO
                 ExerciseProgressDTO exerciseProgressDTO = new ExerciseProgressDTO(
                         workoutExerciseProgress.getSetsDone(),
-                        workoutExerciseProgress.getRepsDone(),
                         workoutExerciseProgress.getWeightUsed(),
-                        workoutExerciseProgress.getDate()
+                        workoutExerciseProgress.getDate(),
+                        workoutExerciseProgress.getId()
                 );
 
                 // Map to ExerciseDTO

@@ -2,6 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   addExercise,
+  changeSetsProgress,
   createWorkout,
   deleteWorkout,
   getWorkout,
@@ -164,6 +165,45 @@ const workouts = createSlice({
         }
       })
       .addCase(addExercise.rejected, (state) => {
+        state.loading = false;
+        state.success = false;
+      })
+      .addCase(changeSetsProgress.pending, (state) => {
+        state.loading = true;
+        state.success = false;
+      })
+      .addCase(changeSetsProgress.fulfilled, (state, action) => {
+        const { exerciseId, increase } = action.payload;
+
+        const workout = state.workouts.find((workout) =>
+          workout.exercises.some(
+            (exercise) => exercise.progress.id === exerciseId
+          )
+        );
+
+        if (workout) {
+          // Find the exercise within the workout
+          const exercise = workout.exercises.find(
+            (exercise) => exercise.progress.id === exerciseId
+          );
+
+          if (exercise) {
+            if (increase) {
+              exercise.progress.setsDone += 1;
+            } else {
+              exercise.progress.setsDone = Math.max(
+                0,
+                exercise.progress.setsDone - 1
+              );
+            }
+          }
+        }
+
+        state.loading = false;
+        state.success = true;
+      })
+
+      .addCase(changeSetsProgress.rejected, (state) => {
         state.loading = false;
         state.success = false;
       });

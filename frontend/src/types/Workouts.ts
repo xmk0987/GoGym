@@ -26,10 +26,10 @@ export interface ExerciseWorkout {
 }
 
 export interface ExerciseProgress {
-  repsDone: number;
   setsDone: number;
   weightUsed: number;
   date: string;
+  id: number;
 }
 
 export interface Exercise {
