@@ -150,7 +150,6 @@ export const addExercise = createAsyncThunk<
     workoutId: number;
     sets: number;
     reps: number | null;
-    isFailure: boolean;
     weight: number;
     exerciseId: number;
     userId: number;
@@ -158,7 +157,7 @@ export const addExercise = createAsyncThunk<
 >(
   "workouts/addExercise",
   async (
-    { workoutId, sets, reps, isFailure, weight, exerciseId, userId },
+    { workoutId, sets, reps, weight, exerciseId, userId },
     { dispatch, rejectWithValue }
   ) => {
     try {
@@ -166,7 +165,6 @@ export const addExercise = createAsyncThunk<
         workoutId,
         sets,
         reps,
-        isFailure,
         weight,
         exerciseId,
         userId,

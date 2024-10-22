@@ -102,7 +102,7 @@ public class WorkoutService {
         newExercise.setSets(request.getSets());
         newExercise.setReps(request.getReps());
         newExercise.setWeight(request.getWeight());
-        newExercise.setFailure(request.isFailure());
+        newExercise.setFailure(request.getReps() == 0);
         workoutExerciseRepository.save(newExercise);
 
         workoutTemplate.getExerciseTemplates().add(newExercise);

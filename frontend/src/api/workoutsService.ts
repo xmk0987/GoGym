@@ -49,7 +49,6 @@ export const workoutsService = {
     workoutId,
     sets,
     reps,
-    isFailure,
     weight,
     exerciseId,
     userId,
@@ -58,7 +57,6 @@ export const workoutsService = {
     userId: number;
     sets: number;
     reps: number | null;
-    isFailure: boolean;
     weight: number;
     exerciseId: number;
   }) => {
@@ -67,7 +65,6 @@ export const workoutsService = {
       {
         sets,
         reps,
-        isFailure,
         weight,
         exerciseId,
       }
