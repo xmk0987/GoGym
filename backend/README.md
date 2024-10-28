@@ -25,16 +25,16 @@ Make sure you have the following installed before setting up the project:
    ```bash
    spring.application.name=workout
 
-  # MySQL database connection details
+  MySQL database connection details
   spring.datasource.url=
   spring.datasource.username=
   spring.datasource.password=
   
-  # Create drop destorys the database on rerun, update will keep the data
+  Create drop destorys the database on rerun, update will keep the data
   spring.jpa.hibernate.ddl-auto=update
   spring.jpa.show-sql=true
   
-  # Mailtrap SMTP configuration
+  Mailtrap SMTP configuration
   spring.mail.host=
   spring.mail.port=
   spring.mail.username=
@@ -43,7 +43,7 @@ Make sure you have the following installed before setting up the project:
   spring.mail.properties.mail.smtp.starttls.enable=
   
   
-  # JWT Config
+  JWT Config
   jwt.secret=your-secret-key
   jwt.accessExpiration=3600000
   jwt.refreshExpiration=604800000
