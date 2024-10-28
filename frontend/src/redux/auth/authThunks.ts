@@ -15,6 +15,7 @@ export const loginUser = createAsyncThunk<
       const response = await authService.loginUser(username, password);
       return response as AuthUser;
     } catch (error) {
+      console.log("Error in login", error);
       const errorMessage = handleError(error);
 
       // Dispatch error message to the notification slice

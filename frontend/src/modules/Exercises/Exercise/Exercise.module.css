@@ -12,7 +12,13 @@
   height: 45px;
   border-radius: 50%;
   background-color: transparent;
-  border: 1px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container span img {
+  width: 100%;
 }
 
 .info {
@@ -53,6 +59,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.deleteExercise {
+  width: 25px;
+  height: 25px;
+  background-color: red;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  box-shadow: var(--box-shadow);
 }
 
 .sets p:nth-of-type(1) {

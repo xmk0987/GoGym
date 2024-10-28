@@ -78,6 +78,7 @@ const Workout = () => {
                 <Exercise
                   exerciseWorkout={exerciseWorkout}
                   key={exerciseWorkout.id}
+                  edit={edit}
                 />
               ))}
             </section>

@@ -142,21 +142,16 @@ public class WorkoutService {
 
     @Transactional
     public void deleteWorkout(Long userId, Long workoutId) {
-        // Step 1: Fetch all workout progress entries related to the workout template
         List<WorkoutProgress> workoutProgressList = workoutProgressRepository.findByWorkoutTemplateId(workoutId);
 
-        // Step 2: For each workout progress, delete all related workout exercise progress entries
         for (WorkoutProgress workoutProgress : workoutProgressList) {
             workoutExerciseProgressRepository.deleteByWorkoutProgressId(workoutProgress.getId());
         }
 
-        // Step 3: Delete the workout progress entries associated with the workout template
         workoutProgressRepository.deleteByWorkoutTemplateId(workoutId);
 
-        // Step 4: Delete all workout exercises (if necessary)
         workoutExerciseRepository.deleteByWorkoutTemplateId(workoutId);
 
-        // Step 5: Finally, delete the workout template itself
         workoutTemplateRepository.deleteById(workoutId);
     }
 
@@ -184,13 +179,11 @@ public class WorkoutService {
     // Private functions:
 
     private WorkoutDTO getWorkoutWithDTO(WorkoutTemplate workoutTemplate) {
-        // Fetch the workout progress (create or fetch by date)
         WorkoutProgress workoutProgress = createOrFetchWorkoutProgressByDate(workoutTemplate);
 
         WorkoutProgressDTO progressDTO = workoutProgress != null ?
                 new WorkoutProgressDTO(workoutProgress.getDate(), workoutProgress.isCompleted()) : null;
 
-        // Fetch and map each exercise template and progress
         List<ExerciseDTO> exercises = new ArrayList<>();
         if (workoutProgress != null) {
             for (WorkoutExerciseTemplate exerciseTemplate : workoutTemplate.getExerciseTemplates()) {

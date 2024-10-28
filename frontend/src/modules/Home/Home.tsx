@@ -27,9 +27,13 @@ const Home = () => {
             <p>{formattedDate}</p>
           </div>
           <div className={style["todayWorkouts"]}>
-            {todaysWorkouts.map((workout) => (
-              <WorkoutCard workout={workout} key={workout.id} />
-            ))}
+            {todaysWorkouts.length > 0 ? (
+              todaysWorkouts.map((workout) => (
+                <WorkoutCard workout={workout} key={workout.id} />
+              ))
+            ) : (
+              <p>No workout today!</p>
+            )}
           </div>
         </section>
       </main>

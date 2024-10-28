@@ -75,6 +75,7 @@ export const authService = {
     } catch (error) {
       console.error("User not authenticated:", error);
       localStorage.removeItem("accessToken");
+      localStorage.removeItem("authenticated");
       return null;
     }
   },

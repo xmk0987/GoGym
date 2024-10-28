@@ -138,26 +138,6 @@ const Workouts = () => {
                 </div>
               );
             })}
-            <div className={styles["dailyWorkout"]}>
-              <p>
-                <strong>Other</strong>
-              </p>
-              {workouts
-                .filter((workout) => workout.dayOfWorkout === "Other")
-                .map((workout) => (
-                  <div className={styles["editWorkouts"]} key={workout.id}>
-                    {edit && (
-                      <button
-                        className={styles["deleteWorkout"]}
-                        onClick={() => handleDeleteWorkout(workout.id)}
-                      >
-                        <TrashIcon size="20px" color="white" />
-                      </button>
-                    )}
-                    <WorkoutCard key={workout.id} workout={workout} />
-                  </div>
-                ))}
-            </div>
           </div>
         ) : (
           <div className={styles["dailyWorkoutList"]}>

@@ -4,14 +4,20 @@ import { AxiosError } from "axios";
 export const handleError = (error: unknown): string => {
   let errorMessage = "Something went wrong!";
 
-  // Check if the error is an AxiosError
   if (error instanceof AxiosError) {
-    errorMessage =
-      error.response?.data || "An error occurred with the request.";
+    // Handle Axios errors with either string message or object data
+    if (typeof error.response?.data === "string") {
+      errorMessage = error.response.data;
+    } else if (error.response?.data && typeof error.response.data === "object") {
+      errorMessage = error.response.data.message || JSON.stringify(error.response.data);
+    } else {
+      errorMessage = "An error occurred with the request.";
+    }
   } else if (error instanceof Error) {
     // Handle generic JavaScript errors
     errorMessage = error.message || "An unexpected error occurred.";
   }
 
+  console.log("Handled error message:", errorMessage);
   return errorMessage;
 };

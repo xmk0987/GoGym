@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -26,31 +27,39 @@ public class AuthController {
 
     // Login endpoint
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
-        Object[] result = authService.login(authRequest.username(), authRequest.password());
+    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
+        try {
+            Object[] result = authService.login(authRequest.username(), authRequest.password());
 
-        String accessToken = (String) result[0];
-        String refreshToken = (String) result[1];
-        User user = (User) result[2];
+            String accessToken = (String) result[0];
+            String refreshToken = (String) result[1];
+            User user = (User) result[2];
 
-        // Create UserDTO object to avoid sending sensitive information
-        UserDTO userDTO = new UserDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail());
+            UserDTO userDTO = new UserDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail());
 
-        // Set the refresh token in an HTTP-only, secure cookie
-        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true); // Use secure=true in production (for HTTPS)
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60);
-        response.addCookie(refreshTokenCookie);
+            Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+            refreshTokenCookie.setHttpOnly(true);
+            refreshTokenCookie.setSecure(true);
+            refreshTokenCookie.setPath("/");
+            refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60);
+            response.addCookie(refreshTokenCookie);
 
-        // Create response body with access token and user info
-        Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("accessToken", accessToken);
-        responseBody.put("user", userDTO);
+            // Create response body with access token and user info
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("accessToken", accessToken);
+            responseBody.put("user", userDTO);
 
-        // Return access token and user in the response body
-        return ResponseEntity.ok(responseBody);
+            // Return access token and user in the response body
+            return ResponseEntity.ok(responseBody);
+        } catch (IllegalStateException ex) {
+            System.out.println(ex.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+
+        } catch (UsernameNotFoundException ex) {
+            System.out.println(ex.getMessage());
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
     }
 
 
@@ -68,25 +77,26 @@ public class AuthController {
     }
 
 
-    // Check authentication status endpoint
     @GetMapping("/me")
     public ResponseEntity<?> checkAuthStatus(@RequestHeader("Authorization") String authHeader) {
-        // Check if the Authorization header is valid
+        // Check if the Authorization header is missing or does not start with "Bearer "
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid Authorization header");
         }
 
-        // Extract the token from the header
-        String accessToken = authHeader.substring(7); // Remove "Bearer " prefix
+        // Extract the token from the header (remove "Bearer " prefix)
+        String accessToken = authHeader.substring(7);
 
         // Call the service to check authentication status
         Optional<UserDTO> userDTO = authService.checkAuthStatus(accessToken);
 
-        // Handle the response based on whether the user was found or not
-        if (userDTO.isPresent()) {
-            return ResponseEntity.ok(userDTO.get());
-        } else {
+        // If the token validation fails or the user is not found, return 401
+        if (userDTO.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token or user not found");
         }
+
+        // If everything is valid, return the user data
+        return ResponseEntity.ok(userDTO.get());
     }
+
 }

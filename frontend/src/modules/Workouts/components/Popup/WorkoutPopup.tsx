@@ -122,7 +122,6 @@ const WorkoutPopup: React.FC<WorkoutPopupProps> = ({
             <option value="Friday">Friday</option>
             <option value="Saturday">Saturday</option>
             <option value="Sunday">Sunday</option>
-            <option value="Other">Other</option>
           </select>
         </div>
         <div className={styles["formItem"]}>
