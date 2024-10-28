@@ -2,6 +2,8 @@
 
 This is the backend for the Gym Application, built using **Spring Boot**. It provides RESTful API endpoints for managing workouts, exercises, user authentication, and tracking user progress. 
 
+Was made just for trying Spring boot out. Will probably not be finnished :D.
+
 ## Features
 - **User Authentication**: Registration, login, and JWT-based authentication
 - **Exercise and Workout Management**: CRUD operations for workouts and exercises
